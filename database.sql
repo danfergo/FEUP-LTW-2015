@@ -21,8 +21,7 @@ CREATE TABLE  Question (
   poll_id INTEGER,
   title VARCHAR,
   description VARCHAR,
-  n_choices INTEGER,
-  idkwhatisthis INTEGER,
+  num_possible_choices INTEGER,
   FOREIGN KEY (poll_id) REFERENCES Poll(id)
 );
 
