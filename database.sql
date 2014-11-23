@@ -2,7 +2,8 @@ CREATE TABLE User (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	name VARCHAR,
 	password VARCHAR,
-	email VARCHAR
+	email VARCHAR,
+  birthday TEXT
 );
 
 CREATE TABLE Poll (
@@ -11,8 +12,8 @@ CREATE TABLE Poll (
 	description VARCHAR,
 	thumbnail VARCHAR,
   privacy VARCHAR,
-  created_time INTEGER,
-  updated_time INTEGER,
+  created_time TEXT,
+  updated_time TEXT,
   FOREIGN KEY (client_id) REFERENCES User(id)
 );
 
