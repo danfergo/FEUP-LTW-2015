@@ -7,37 +7,32 @@ CREATE TABLE User (
 );
 
 CREATE TABLE Poll (
-	id1 INTEGER PRIMARY KEY AUTOINCREMENT,
-  client_id INTEGER,
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+  client_id INTEGER REFERENCES User(id),
 	description VARCHAR,
 	thumbnail VARCHAR,
   privacy VARCHAR,
   created_time TEXT,
-  updated_time TEXT,
-  FOREIGN KEY (client_id) REFERENCES User(id)
+  updated_time TEXT
 );
 
 CREATE TABLE  Question (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  poll_id INTEGER,
+  poll_id INTEGER REFERENCES Poll(id),
   title VARCHAR,
   description VARCHAR,
-  num_possible_choices INTEGER,
-  FOREIGN KEY (poll_id) REFERENCES Poll(id)
+  num_possible_choices INTEGER
 );
 
 CREATE TABLE  Answer (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  question_id INTEGER,
-  title VARCHAR,
-  FOREIGN KEY (question_id) REFERENCES Question(id)
+  question_id INTEGER REFERENCES Question(id),
+  title VARCHAR
 );
 
 CREATE TABLE  chooseAnswer (
-  user_id INTEGER,
-  anwser_id INTEGER,
+  user_id INTEGER REFERENCES User(id),
+  anwser_id INTEGER REFERENCES Answer(id),
   title VARCHAR,
-  FOREIGN KEY (user_id) REFERENCES User,
-  FOREIGN KEY (anwser_id) REFERENCES Answer(id),
   PRIMARY KEY (user_id,anwser_id)
 );
