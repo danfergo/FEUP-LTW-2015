@@ -1,10 +1,13 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="pt">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Bootstrap 101 Template</title>
+        <title>QnA | </title>
 
         <!-- Bootstrap -->
         <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -37,48 +40,55 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-2 sidebar">
-                    <form action="" method="post">
-                        <lable>
-                            Email:<br>
-                            <input type="email" name="email">
-                        </lable><br>
-                         <lable>
-                            Password:<br>
-                            <input type="password" name="password">
-                        </lable><br>
+
+                    <?php
+                    if ($_SESSION['qnaltw2015_userid']) {
+                        echo "you duude , u're logged in yoh. <br>";
+                    ?>
+                    <button id="user-logout">logout</button>
+                    <?php } else { ?> 
+                        <form action="index.php" method="post" id="user-login">
+                            <lable>
+                                Email:<br>
+                                <input type="email" name="email">
+                            </lable><br>
+                            <lable>
+                                Password:<br>
+                                <input type="password" name="password">
+                            </lable><br>
                             <input type="submit" value="Login">
-                        
-                    </form>
 
-                    <br><br><br><br>
-                    
-                    <form action="" method="post">
-                        <lable>
-                            Nome:<br>
-                            <input type="text" name="full_name">
-                        </lable><br>
-                        <lable>
-                            Email:<br>
-                            <input type="email" name="email">
-                        </lable><br>
-                        <lable>
-                            Password:<br>
-                            <input type="password" name="password">
-                        </lable><br>
-                        <lable>
-                            Repita a password:<br>
-                            <input type="password" name="birthday">
-                        </lable><br>
-                        <lable>
-                            Data nascimento:<br>
-                            <input type="date" name="re_password">
-                        </lable><br>
-                        <input type="submit" value="Registar">
-                    </form>
+                        </form>
 
-                    
-                    
+                        <br><br><br><br>
 
+                        <form action="index.php" method="post" id="user-register">
+                            <lable>
+                                Nome:<br>
+                                <input type="text" name="name">
+                            </lable><br>
+                            <lable>
+                                Email:<br>
+                                <input type="email" name="email">
+                            </lable><br>
+                            <lable>
+                                Password:<br>
+                                <input type="password" name="password">
+                            </lable><br>
+                            <lable>
+                                Repita a password:<br>
+                                <input type="password" name="re_password">
+                            </lable><br>
+                            <lable>
+                                Data nascimento:<br>
+                                <input type="date" name="birthday">
+                            </lable><br>
+                            <input type="submit" value="Registar">
+                        </form>
+
+
+
+                    <?php } ?>
 
 
 
@@ -96,6 +106,11 @@
             <button> MENU </button>
 
         </div>
+
+
+
+
+
         <style>
             @media (max-width: 992px) {
                 .sidebar{
@@ -120,7 +135,7 @@
                 transition: all 0.2s ease-in-out;
             }
 
-            
+
             input::-webkit-calendar-picker-indicator{
                 display: none;
             }
@@ -129,7 +144,7 @@
             input[type="date"]::-webkit-input-placeholder{ 
                 visibility: hidden !important;
             }
-            
+
         </style>
 
         <!--       <div class="row">
@@ -150,7 +165,8 @@
 
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="js/jquery.js" type="text/javascript"></script>
+        <script src="js/user.register.js" type="text/javascript"></script>
 
 
         <script type="text/javascript">
@@ -158,6 +174,7 @@
                 $(".sidebar").toggleClass("active");
 
             });
+
         </script>
 
 
