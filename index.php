@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="pt">
     <head>
@@ -42,10 +39,10 @@ session_start();
                 <div class="col-md-2 sidebar">
 
                     <?php
-                    if ($_SESSION['qnaltw2015_userid']) {
+                    if (isset($_SESSION['qnaltw2015_userid'])) {
                         echo "you duude , u're logged in yoh. <br>";
                     ?>
-                    <button id="user-logout">logout</button>
+                    <input type="button" id="user-logout" value="Logout">
                     <?php } else { ?> 
                         <form action="index.php" method="post" id="user-login">
                             <lable>

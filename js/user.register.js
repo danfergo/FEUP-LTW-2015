@@ -11,6 +11,13 @@ function userLogin(form){
 }
 
 
+function userLogout(form){
+    $.post("requests/user/logout.php", form.serialize()).done(function(data){
+        alert(data);
+    });
+}
+
+
 
 $("#user-register").on('submit', function(event) {
     event.preventDefault();
@@ -20,4 +27,9 @@ $("#user-register").on('submit', function(event) {
 $("#user-login").on('submit',function(event){
     event.preventDefault();
     userLogin($(this));
+});
+
+
+$("#user-logout").on('click',function(event){
+    userLogout($(this)); 
 });

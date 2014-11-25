@@ -10,19 +10,6 @@ class User{
     public function __construct(){
     }
     
-    public static function UserCreate($name,$email,$password,$birthday){
-        $user = new User();
-        $user->setPassword($password);
-        if($user->setName($name) === false){
-            return 'INVALID_NAME';
-        }else if($user->setEmail($email) === false){
-            return 'INVALID_EMAIL';
-        } else if($user->setBirthday($birthday) === false){
-            return 'INVALID_BIRTHDAY';
-        }
-        return $user;
-    }
-    
     public static function UserInit($userid,$name,$email,$password,$birthday) {
         $user = new User();
         $user->userid = $userid;
@@ -58,21 +45,25 @@ class User{
         $this->password =  password_hash($password, PASSWORD_DEFAULT, $encOptions);
     }
 
+    public function hasPassword($password){
+        return password_verify($password, $this->password);
+    }
+    
     public function setName($name) {
         $name = trim($name);
         if(strlen($name) >= 6 && strlen($name) <= 30  && count(explode(' ',$name)) === 2){
             $this->name = $name;
+            return true;
         }else{
             return false;
         }
     }
     
-    
-
     public function setEmail($email) {
         $email = trim($email);
         if(filter_var($email, FILTER_VALIDATE_EMAIL)){
             $this->email = $email;
+            return true;
         }else {
             return false;    
         }
@@ -83,6 +74,7 @@ class User{
         $timeBirthday = strtotime($birthday);
         if($timeBirthday > strtotime("-120 year", time()) &&  $timeBirthday < strtotime("-6 year", time()) ) {
             $this->birthday = $birthday;
+            return true;
         }else{
             return false;
         }

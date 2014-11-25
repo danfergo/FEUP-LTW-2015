@@ -1,4 +1,5 @@
 <?php
+require_once('../../actions/user.php');
 
-session_start();
-session_destroy();
+// user logout
+echo json_encode(user_logout());
