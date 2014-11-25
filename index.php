@@ -8,7 +8,7 @@
 
         <!-- Bootstrap -->
         <link href="css/bootstrap.min.css" rel="stylesheet">
-
+        <link href="css/basic.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -105,47 +105,8 @@
         </div>
 
 
-
-
-
-        <style>
-            @media (max-width: 992px) {
-                .sidebar{
-                    position:absolute;
-                    left:-20%;
-                    top:0;
-                    bottom:0;
-                    z-index:10;
-                    width:20%;
-                }
-                .sidebar.active{
-                    left:0;
-                }
-            }
-
-            .sidebar{
-                background:white;
-
-                -webkit-transition: all 0.2s ease-in-out;
-                -moz-transition: all 0.2s ease-in-out;
-                -o-transition: all 0.2s ease-in-out;
-                transition: all 0.2s ease-in-out;
-            }
-
-
-            input::-webkit-calendar-picker-indicator{
-                display: none;
-            }
-
-
-            input[type="date"]::-webkit-input-placeholder{ 
-                visibility: hidden !important;
-            }
-
-        </style>
-
         <!--       <div class="row">
-                   <div class="col-md-8">.col-md-8</div>
+                   <div class="col-md-8">.col-md-8 </div>
                    <div class="col-md-4">.col-md-4</div>
                </div>
                <div class="row">
