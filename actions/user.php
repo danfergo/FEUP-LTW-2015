@@ -33,6 +33,10 @@ function user_logout(){
 }
 
 
+function user_who(){
+    return session_exists() ? db_user_select_byid(session_userid()) : null;
+}
+
 /** manage account **/
 
 function user_register($name,$email,$password,$birthday){

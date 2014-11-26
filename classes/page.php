@@ -1,47 +1,66 @@
 <?php
-require_once("module.php");
+require_once("view.php");
 
-class Page {
+class Page extends View{
 
-    private $lang = 'pt';
-    private $path = "";
-    private $extraHeaders = "";
-    private $title = "";
-    private $modules = array();
+    private $user;
+    protected $path = "";
+    protected $headers = "";
+    protected $title = "";
 
-    public function __construct($path) {
+    public function __construct($path, $user) {
+        $this->user = $user;
         $this->path = $path;
     }
 
+    public function addMetaTag($metadata) {
+        $metatag = '<meta';
+        foreach ($metadata as $attr => $value) {
+            $metatag .= " " . $attr . '="' . $value . '"';
+        }
+
+        $metatag .= ">";
+        $this->headers .= $metatag . "\n";
+    }
+
     public function addJavasScriptSrc($src) {
-        $this->extraHeaders .= '<script type="text/javascript" src="' . $src . '> </script>';
+        $this->headers .= "\n" . '<script type="text/javascript" src="' . $src . '"> </script>';
     }
 
     public function addStyleSheetSrc($src) {
-        $this->extraHeaders .= '<script type="text/javascript" src="' . $src . '> </script>';
+        $this->headers .= "\n" . '<link href="' . $src . '" rel="stylesheet">';
     }
 
-    public function addModule(Module $module) {
-        $this->modules[] = $module;
+    public function setBody($view){
+        $this->addChildView('body', $view);
     }
+    
+    public function getUser(){
+        return $this->user;
+    }
+    
+    public function setTitle($title){
+        $this->title = $title;
+    }
+    
+    protected function initializeChildren(){
+         $this->initialize();
 
-    public function printHTML() {
-        ?>
-        <!DOCTYPE html>
-        <html lang="<?= $this->lang ?>">
-            <head>
-                <title><?= $this->title ?></title>
-                <?= $this->extraHeaders ?>
-            </head>
-            <body>
-                <?php
-                foreach ($this->modules as $module) {
-                    $module->printModule();
-                }
-                ?>
-            </body>
-        </html>
-        <?php
+         foreach ($this->getChildren() as $child) {
+                $child->setPage($this);
+                $child->initializeChildren();
+         }
+    }
+    
+    public function initialize() {
+        $this->setTemplate('page');
+    }
+    
+    public function echoView() {
+        $this->initializeChildren();
+        parent::echoView();
     }
 
 }
+
+
