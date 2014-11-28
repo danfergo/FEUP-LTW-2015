@@ -58,7 +58,7 @@ class ZenPage extends Page {
 
         $this->addStyleSheetSrc('css/bootstrap.min.css');
         $this->addStyleSheetSrc('css/basic.css');
-        $this->addJavasScriptSrc('js/jquery.js');
+        $this->addJavaScriptSrc('js/jquery.js');
 
         $this->addChildView('body', $this->body);
 
