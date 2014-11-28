@@ -57,7 +57,7 @@ class ZenPage extends Page {
         $this->addMetaTag(array('http-equiv' => 'X-UA-Compatible', 'content' => 'IE=edge'));
 
         $this->addStyleSheetSrc('css/bootstrap.min.css');
-        $this->addStyleSheetSrc('css/basic.css');
+        $this->addStyleSheetSrc('css/basic.css'); 
         $this->addJavaScriptSrc('js/jquery.js');
 
         $this->addChildView('body', $this->body);
