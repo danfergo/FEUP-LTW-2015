@@ -23,7 +23,7 @@ class Page extends View{
         $this->headers .= $metatag . "\n";
     }
 
-    public function addJavasScriptSrc($src) {
+    public function addJavaScriptSrc($src) {
         $this->headers .= "\n" . '<script type="text/javascript" src="' . $src . '"> </script>';
     }
 
