@@ -1,15 +1,23 @@
 <?php
 
-require_once(dirname(dirname(__FILE__)) . '/classes/page.php');
+require_once('classes/page.php');
+
+class Footer extends View {
+
+    public function initialize() {
+        $this->setTemplate('page-footer');
+    }
+
+}
 
 class Sidebar extends PrivateView {
 
     public function initializeForMember() {
-        $this->setTemplate('sidebar-logged');
+        $this->setTemplate('page-sidebar-logged');
     }
 
     public function initializeForPublic() {
-        $this->setTemplate('sidebar-nonlogged');
+        $this->setTemplate('page-sidebar-nonlogged');
         $this->getPage()->addJavasScriptSrc('js/user.register.js');
     }
 
@@ -18,16 +26,17 @@ class Sidebar extends PrivateView {
 class Header extends View {
 
     public function initialize() {
-        $this->setTemplate('header');
+        $this->setTemplate('page-header');
     }
 
 }
 
-class PageWrapper extends PrivateView {
+class PageWrapper extends View {
 
     public function initialize() {
         $this->setTemplate('page-wrapper');
         $this->addChildView('sidebar', new Sidebar());
+        $this->addChildView('footer', new Footer());
         $this->addChildView('header', new Header());
     }
 
@@ -36,7 +45,8 @@ class PageWrapper extends PrivateView {
 class ZenPage extends Page {
 
     private $body;
-
+    private $pageTitle;
+    
     public function __construct($path, $user) {
         parent::__construct($path, $user);
         $this->body = new PageWrapper();
@@ -55,6 +65,16 @@ class ZenPage extends Page {
         parent::initialize();
     }
 
+    public function setPageTitle($title){
+        $this->pageTitle = $title;
+        $this->title = "QnA | " . $title;
+    }
+    
+    public function getPageTitle($title){
+        return $title;
+    }
+    
+    
     public function setMainView($view) {
         $this->body->addChildView('main-view', $view);
     }

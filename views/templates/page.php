@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?= $this->lang ?>">
+<html lang="pt">
     <head>
         <meta charset="utf-8">
         <title><?= $this->title ?></title>
