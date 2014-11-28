@@ -7,18 +7,18 @@ require_once ('sessioning.php');
 
 function user_login($email, $password) {
     if(session_exists()){
-        return 'USER_ALREADY_LOGGED_IN';
+        throw new Exception('USER_ALREADY_LOGGED_IN');
     }
     
     $user = db_user_select_byemail($email);
     
     if ($user === false) {
-        return 'INVALID_EMAIL';
+        throw new Exception('EMAIL_IS_NOT_REGESTERED');
     } else if ($user->hasPassword($password)) {
         session_begin($user);
-        return $user->toJSON();
+        return $user;
     } else {
-        return 'INVALID_PASSWORD';
+        throw new Exception('INVALID_PASSWORD');
     }
 }
 
@@ -26,9 +26,8 @@ function user_login($email, $password) {
 function user_logout(){
     if(session_exists()){
         session_destroy();
-        return true;
     } else {
-        return 'USER_NOT_LOGGED_IN';
+        throw new Exception('USER_NOT_LOGGED_IN');
     }
 }
 
@@ -43,19 +42,15 @@ function user_register($name,$email,$password,$birthday){
    $user = new User();
    
    if (db_user_select_byemail($user->getEmail()) !== false) {
-        return 'INVALID_EMAIL_ALREADY_EXISTS';
+        throw new Exception('INVALID_EMAIL_ALREADY_EXISTS');
    }
    
    $user->setPassword($password);
-    if($user->setName($name) === false){
-        return 'INVALID_NAME';
-    }else if($user->setEmail($email) === false){
-        return 'INVALID_EMAIL';
-    } else if($user->setBirthday($birthday) === false){
-        return 'INVALID_BIRTHDAY';
-    }
-   
-    return db_user_insert($user)->toJSON();
+   $user->setName($name);
+   $user->setEmail($email);
+   $user->setBirthday($birthday);
+
+    return db_user_insert($user);
 }
 
 

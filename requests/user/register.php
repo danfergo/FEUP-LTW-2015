@@ -7,7 +7,10 @@ if(empty($_POST) || !isset($_POST['name']) || !isset($_POST['email']) || !isset(
 } 
 
 // register user 
-echo json_encode(user_register($_POST['name'],$_POST['email'],$_POST['password'],$_POST['birthday'])); 
 
 
-
+try {
+    echo user_register($_POST['name'],$_POST['email'],$_POST['password'],$_POST['birthday'])->toJSON(); 
+} catch (Exception $e) {
+    echo $e->getMessage();
+}

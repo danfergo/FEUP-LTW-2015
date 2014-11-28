@@ -51,7 +51,7 @@ abstract class View {
 
     public function echoView() {
         if ($this->template !== "") {
-            include(dirname(dirname(__FILE__)) . "/views/templates/$this->template.php");
+            include(dirname(dirname(__FILE__)) . "/templates/$this->template.php");
         }
     }
 
@@ -67,12 +67,8 @@ abstract class PrivateView extends View {
         }
     }
 
-    public function initializeForMember() {
-        
-    }
+    abstract public function initializeForMember();
 
-    public function initializeForPublic() {
-        
-    }
+    abstract public function initializeForPublic();
 
 }

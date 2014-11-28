@@ -31,6 +31,10 @@ class Page extends View{
         $this->headers .= "\n" . '<link href="' . $src . '" rel="stylesheet">';
     }
 
+    public function redirectTo($url){
+        header("Location: $url");
+    }
+    
     public function setBody($view){
         $this->addChildView('body', $view);
     }
@@ -42,6 +46,7 @@ class Page extends View{
     public function setTitle($title){
         $this->title = $title;
     }
+    
     
     protected function initializeChildren(){
          $this->initialize();

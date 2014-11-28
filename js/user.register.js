@@ -32,4 +32,4 @@ $("#user-login").on('submit',function(event){
 
 $("#user-logout").on('click',function(event){
     userLogout($(this)); 
-});
+}); 
