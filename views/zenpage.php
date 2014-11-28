@@ -18,7 +18,7 @@ class Sidebar extends PrivateView {
 
     public function initializeForPublic() {
         $this->setTemplate('page-sidebar-nonlogged');
-        $this->getPage()->addJavasScriptSrc('js/user.register.js');
+        $this->getPage()->addJavaScriptSrc('js/user.register.js');
     }
 
 }
