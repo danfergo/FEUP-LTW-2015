@@ -18,7 +18,7 @@ class Sidebar extends PrivateView {
 
     public function initializeForPublic() {
         $this->setTemplate('page-sidebar-nonlogged');
-        $this->getPage()->addJavasScriptSrc('js/user.register.js');
+        $this->getPage()->addJavaScriptSrc('js/user-register.js');
     }
 
 }
@@ -46,6 +46,7 @@ class ZenPage extends Page {
 
     private $body;
     private $pageTitle;
+    private $websiteTitle = "QnA";
     
     public function __construct($path, $user) {
         parent::__construct($path, $user);
@@ -56,10 +57,12 @@ class ZenPage extends Page {
         $this->addMetaTag(array('viewport' => 'width=device-width, initial-scale=1'));
         $this->addMetaTag(array('http-equiv' => 'X-UA-Compatible', 'content' => 'IE=edge'));
 
+        
         $this->addStyleSheetSrc('css/bootstrap.min.css');
         $this->addStyleSheetSrc('css/basic.css'); 
         $this->addJavaScriptSrc('js/jquery.js');
 
+        $this->setTitle($this->websiteTitle);
         $this->addChildView('body', $this->body);
 
         parent::initialize();
@@ -67,7 +70,7 @@ class ZenPage extends Page {
 
     public function setPageTitle($title){
         $this->pageTitle = $title;
-        $this->title = "QnA | " . $title;
+        $this->title = $this->websiteTitle . " | " . $title;
     }
     
     public function getPageTitle($title){
