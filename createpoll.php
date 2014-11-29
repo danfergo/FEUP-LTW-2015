@@ -10,6 +10,7 @@ class CreatePoll extends View {
 
     public function initialize() {
         $this->getPage()->setPageTitle("Criar votação");
+        $this->getPage()->addJavaScriptSrc("js/poll-create.js");
         $this->setTemplate('poll-create');
     }
 
