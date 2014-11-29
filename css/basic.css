@@ -48,10 +48,12 @@ input[type="date"]::-webkit-input-placeholder{
     padding:8px 0;
 }
 
-#page-header .form-control{
+#page-header .form-control, #page-header .btn{
     height:26px;
     padding:2px 6px;    
 }
+
+
 
 #logo {
     margin:0 10px;
