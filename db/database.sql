@@ -8,9 +8,9 @@ CREATE TABLE user (
 
 CREATE TABLE poll (
     poll_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    client_id INTEGER REFERENCES user(user_id),
+    owner_id INTEGER REFERENCES user(user_id),
+    title TEXT,
     description VARCHAR,
-    thumbnail VARCHAR,
     privacy VARCHAR,
     created_time TEXT,
     updated_time TEXT
