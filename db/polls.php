@@ -9,17 +9,33 @@ require_once (dirname(dirname(__FILE__)) . '/classes/question.php');
 function db_poll_insert($poll){
     global $dbh;
     
-    $stmt = $dbh->prepare("INSERT INTO poll (client_id,description,privacy)  VALUES (?,?,?)");
+    $stmt = $dbh->prepare("INSERT INTO poll (owner_id,title,description,privacy)  VALUES (?,?,?,?)");
     $stmt->execute(array(
         $poll->getOwnerId(),
+        $poll->getTitle(),
         $poll->getDescription(),
         $poll->getPrivacy()));
     $poll->setPollId($dbh->lastInsertId());
-    
-    foreach ($poll->getQuestions() as $question){
-        foreach($question->getAnswers() as $answer){
-            
-        }
-    }
-    
 }
+
+function db_question_insert($question){
+    global $dbh;
+    
+    $stmt = $dbh->prepare("INSERT INTO question (poll_id,title,description)  VALUES (?,?,?)");
+    $stmt->execute(array(
+        $question->getPollId(),
+        $question->getTitle(),
+        $question->getDescription()));
+    $question->setPollId($dbh->lastInsertId());  
+}
+
+function db_answer_insert($answer){
+    global $dbh;
+    
+    $stmt = $dbh->prepare("INSERT INTO answer (question_id,title)  VALUES (?,?)");
+    $stmt->execute(array(
+        $answer->getQuestionId(),
+        $answer->getTitle()));
+    $answer->setPollId($dbh->lastInsertId()); 
+}
+

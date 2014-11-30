@@ -1,5 +1,5 @@
 <div id="page-header" >
-     <div class="container-fluid">
+    <div class="container-fluid">
         <div class="row">
 
             <div class="col-md-2 col-xs-2">
@@ -13,7 +13,15 @@
 
             <div class="col-md-2 col-xs-0"></div>
             <div class="col-md-4 col-xs-10">
-                <input type="text" class="form-control" placeholder="Procurar votação">
+                <div class="input-group">
+
+                    <input type="text" class="form-control" placeholder="Procurar votação">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                    </span> 
+                </div>
             </div>
             <div class="col-md-4 col-xs-0"></div>
         </div>

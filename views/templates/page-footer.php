@@ -1,3 +1,3 @@
-<footer>
+<footer id="page-footer">
     <a href="about.php">Sobre</a> | <a href="contact.php">Contacto</a> 
 </footer>

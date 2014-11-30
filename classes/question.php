@@ -27,7 +27,7 @@ class Question {
         return $this->answers;
     }
 
-    public function addAnswers($answer) {
+    public function addAnswer($answer) {
         $this->answers[] = $answer;
     }
 

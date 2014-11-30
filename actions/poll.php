@@ -1,40 +1,62 @@
 <?php
 
-require_once ('sessioning.php');
+function arr_at($arr, $pos) {
+    if (!isset($arr[$pos])) {
+        throw new Exception('DATA_MISSING');
+    }
+    return $arr[$pos];
+}
 
 /**
  * 
  * question is a array with [descriptio,
  */
-function poll_create($description, $privacy, $questions) {
+function poll_create($poll) {
     // verifies if there is a user logged in 
-    /*if (user_who() !== null) {
-        // creates poll   
-        $poll = new Poll();
-        $poll->setDescription($description);
-        $poll->setDescription($privacy);
-        
-                if (!) {
-            return 'NOT_VALID_DESCRIPTION';
+    if (user_who() === null) {
+        throw Exception('USER_NOT_LOGGED_IN');
+    }
+    // creates poll   
+    $p = new Poll();
+    $p->setTitle(arr_at($poll, 'title'));
+    $p->setDescription(arr_at($poll, 'description'));
+    $p->setPrivacy(arr_at($poll, 'privacy'));
+
+
+    if (count(arr_at($poll, 'questions')) < 1) {
+        throw Exception('MUST_EXIST_A_QUESTION');
+    }
+
+    foreach (arr_at($poll, 'questions') as $question) {
+        $q = new Question();
+        $q->setDescription(arr_at($question, 'description'));
+        $q->setTitle(arr_at($question, 'title'));
+
+        if (count(arr_at($question, 'answers')) < 2) {
+            throw Exception('MUST_EXIST_TWO_ANSWERS');
         }
-        if (!) {
-            return 'NOT_VALID_PRIVACY_VALUE';
+
+        foreach (arr_at($question, 'answers') as $answer) {
+            $a = new Answer();
+            $a->setTitle(arr_at($answer, 'title'));
+            $q->addAnswer($a);
         }
-        foreach($questions as $question){
-            $question = new Question();
-            if($question->setDescription($description)){
-                
-            }
-            
+
+        $p->addQuestion($q);
+    }
+
+    // we have now all the poll structure created and validated. lets insert it into db.
+    db_poll_insert($p);
+    foreach ($p->getQuestions() as $q) {
+        $q->setPollId($p->getPollId());
+        db_question_insert($q);
+        foreach ($q->getAnswers() as $a) {
+            $a->setQuestionId($q->getQuestionId());
+            db_answer_insert($a);
         }
-    } else {
-        return 'USER_NOT_LOGGED_IN';
-    }*/
-    // for each question , for each answer
-    //       creates question
-    //       creates answer and add it to the question
-    // adds question to the poll
-    // calls db insert poll 
+    }
+
+    return $p;
 }
 
 function poll_delete($pollId) {

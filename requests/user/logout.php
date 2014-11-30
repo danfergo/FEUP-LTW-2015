@@ -1,4 +1,6 @@
 <?php
+ header('Content-type:application/json');
+
 require_once('../../actions/user.php');
 
 // user logout

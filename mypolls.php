@@ -6,7 +6,7 @@ require_once ('actions/user.php');
 
 $page = new ZenPage(__FILE__, user_who());
 
-class About extends View {
+class MyPolls extends View {
 
     public function initialize() {
         
@@ -14,7 +14,7 @@ class About extends View {
 
 }
 
-$page->setMainView(new About());
+$page->setMainView(new MyPolls());
 $page->echoView();
 
 

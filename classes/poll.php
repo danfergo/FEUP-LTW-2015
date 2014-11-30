@@ -10,8 +10,8 @@ class Poll {
     private $createdTime;
     private $updatedTime;
     private $questions = array();
-    
-    
+    private $title;
+
     function __construct() {
         
     }
@@ -43,7 +43,14 @@ class Poll {
         $this->pollId = $pollId;
     }
 
-        
+    public function getTitle() {
+        return $this->title;
+    }
+
+    public function setTitle($title) {
+        $this->title = $title;
+    }
+
     public function getOwnerId() {
         return $this->ownerId;
     }
@@ -92,4 +99,9 @@ class Poll {
         $this->updatedTime = $updatedTime;
     }
 
+    public function toJSON(){
+        $data = array('poll_id' => $this->pollId, 'title' =>$this->title, 'description' => $this->description, 'privacy' => $this->privacy);
+        
+    }
+    
 }
