@@ -11,7 +11,7 @@ CREATE TABLE poll (
     owner_id INTEGER REFERENCES user(user_id),
     title TEXT,
     description VARCHAR,
-    privacy VARCHAR,
+    privacy INTEGER,
     created_time TEXT,
     updated_time TEXT
 );
@@ -21,7 +21,8 @@ CREATE TABLE  question (
     poll_id INTEGER REFERENCES poll(poll_id),
     title VARCHAR,
     description VARCHAR,
-    num_possible_choices INTEGER
+    min_possible_choices INTEGER,
+    max_possible_choices INTEGER
 );
 
 CREATE TABLE  answer (
