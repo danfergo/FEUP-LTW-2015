@@ -1,4 +1,8 @@
 <?php
+require_once (dirname(dirname(__FILE__)).'/db/polls.php');
+require_once (dirname(dirname(__FILE__)).'/classes/poll.php');
+require_once (dirname(dirname(__FILE__)).'/classes/user.php');
+require_once ('user.php');  
 
 function arr_at($arr, $pos) {
     if (!isset($arr[$pos])) {
@@ -14,7 +18,7 @@ function arr_at($arr, $pos) {
 function poll_create($poll) {
     // verifies if there is a user logged in 
     if (user_who() === null) {
-        throw Exception('USER_NOT_LOGGED_IN');
+        throw new Exception('USER_NOT_LOGGED_IN');
     }
     // creates poll   
     $p = new Poll();
@@ -24,7 +28,7 @@ function poll_create($poll) {
 
 
     if (count(arr_at($poll, 'questions')) < 1) {
-        throw Exception('MUST_EXIST_A_QUESTION');
+        throw new Exception('MUST_EXIST_A_QUESTION');
     }
 
     foreach (arr_at($poll, 'questions') as $question) {

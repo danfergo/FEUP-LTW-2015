@@ -6,12 +6,15 @@ require_once ('actions/user.php');
 
 $page = new ZenPage(__FILE__, user_who());
 
-class CreatePoll extends View {
+class CreatePoll extends PrivateView {
 
-    public function initialize() {
+    public function initializeForMember() {
         $this->getPage()->setPageTitle("Criar votação");
         $this->getPage()->addJavaScriptSrc("js/poll-create.js");
-       // $this->setTemplate('poll-create');
+    }
+
+    public function initializeForPublic() {
+        $this->getPage()->redirectTo("index.php");
     }
 
 }

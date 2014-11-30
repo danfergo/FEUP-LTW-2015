@@ -70,8 +70,9 @@ function pollSerialize($form) {
 
 /**** ANSWER ****/
 
-function Answer() {
-    this.li = $("<li class=input-group>");
+function Answer(question) {
+    this.question = question;
+    this.li = $("<li>");
     this.li.append(this.input = $("<input type=text class=form-control>"));
 }
 
@@ -79,8 +80,8 @@ Answer.prototype.html = function() {
     return this.li;
 };
 
-Answer.prototype.data = function() {
-    return this.input.val();
+Answer.prototype.setName = function(q, a) {
+    this.input.attr('name', 'answer_' + q + '_' + a);
 };
 
 Answer.prototype.rmv = function() {
@@ -89,24 +90,35 @@ Answer.prototype.rmv = function() {
 
 
 
-function RemovableAnswer() {
-    Answer.call(this); // calls supper class constructor
+function RemovableAnswer(question) {
+    Answer.call(this, question); // calls supper class constructor
 
+    this.li.addClass("input-group");
     this.btnRemove = $("<button class='btn btn-default'>").append("<span class='glyphicon glyphicon-remove'>");
-    this.btnRemove.data('answer', this);
-
     $wrapper = $("<span class=input-group-btn>").append(this.btnRemove);
-    this.btnRemove.on('click', function() {
-        $(this).data('answer').rmv();
+
+    this.btnRemove.data('answer', this);
+    this.btnRemove.on('click', function(e) {
+        e.preventDefault();
+        var answer = $(this).data('answer');
+        answer.question.rmv(answer);
     });
     this.li.append($wrapper);
 
 }
-
 RemovableAnswer.prototype = new Answer();
 
 
-
+function AnswerAdder(question) {
+    Answer.call(this, question); // calls supper class constructor
+    this.input.addClass("answer-adder");
+    this.input.val("Clique para adicionar opção.");
+    this.input.data('question', this.question).on('click keypress', function(e) {
+        e.preventDefault();
+        $(this).data('question').addAnswer();
+    });
+}
+AnswerAdder.prototype = new Answer();
 
 /**** QUESTION ****/
 
@@ -114,15 +126,30 @@ RemovableAnswer.prototype = new Answer();
 function Question() {
 
     this.li = $("<li>");
+    $area = $("<div class=container-fluid>");
+    $col = $("<div class='col-md-6 col-xs-12'>").append("<label class='col-md-4 control-label'>").append("<div class=col-md-8>");
+    $area.append($col1 = $col.clone()).append($col2 = $col.clone());
 
-    this.li.append(this.inpTitle = $('<input type=text>'));
+
+    $col1.find("label").html("Minimo de opções:");
+    $col2.find("label").html("Máximo de opções:");
+
+    this.selMin = $('<select class=form-control>').appendTo($col1.find("div"));
+    this.selMax = $('<select class=form-control>').appendTo($col2.find("div"));
+
+    this.li.append(this.inpTitle = $('<input type=text class=form-control>'));
+    this.li.append(this.inpDescription = $('<input type=text class=form-control>'));
     this.li.append(this.ol = $("<ol>"));
-
     this.answers = new Array();
-    this.answers.push(new Answer());
-    this.answers.push(new Answer());
-    this.ol.append(this.answers[0].html(), this.answers[1].html());
+    this.answerAdder = new AnswerAdder(this);
+    this.ol.append(this.answerAdder.html());
 
+    this.li.append($area);
+
+
+    // default answers
+    this.addAnswer();
+    this.addAnswer();
 }
 
 Question.prototype.html = function() {
@@ -131,9 +158,20 @@ Question.prototype.html = function() {
 
 
 Question.prototype.addAnswer = function() {
-    var answer = new RemovableAnswer();
+    var answer = this.answers.length < 2 ? new Answer(this) : new RemovableAnswer(this);
     this.answers.push(answer);
-    this.ol.append(answer.html());
+    this.answerAdder.html().before(answer.html());
+    answer.input.focus();
+
+    this.selMin.append("<option value='" + this.answers.length + "'>" + this.answers.length);
+    this.selMax.append("<option value='" + this.answers.length + "'>" + this.answers.length);
+};
+
+
+Question.prototype.rmv = function(answer) {
+    answer.rmv();
+    this.selMin.find("option:last").remove();
+    this.selMax.find("option:last").remove();
 };
 
 Question.prototype.data = function() {
@@ -148,44 +186,75 @@ Question.prototype.data = function() {
 };
 
 
+Question.prototype.setName = function(q) {
+    for (a in this.answers) {
+        this.answers[a].setName(q, a);
+    }
+    this.selMin.attr('name', 'question_min_' + q);
+    this.selMax.attr('name', 'question_max_' + q);
+    this.inpTitle.attr('name', 'question_title_' + q);
+    this.inpDescription.attr('name', 'question_description_' + q);
+};
+
+
+
 
 
 /**** POLL ****/
 
 function Poll() {
-    this.form = $("<form>");
+    this.form = $("<form class=create-poll action=requests/poll/create.php method=post enctype='multipart/form-data'>").append('<div class=form-group><label>Título').append('<div class=form-group><label>Descrição');
+    this.form.find('label:eq(0)').append(this.inpTitle = $('<input type=text class=form-control>'));
+    this.form.find('label:eq(1)').append(this.inpDescription = $('<input type=text class=form-control>'));
+    this.form.append(this.inpPrivacy = $("<select class=form-control>").append('<option value=0>Publica').append('<option value=1>Privada'));
+
+    this.form.append($fsQuestions = $("<fieldset>"));
+    $fsQuestions.append("<legend><label>Questões");
     this.form.append(this.ol = $("<ol>"));
-
     this.questions = new Array();
-    this.questions.push(new Question());
-    this.ol.append(this.questions[0].html());
+    this.form.append(this.btnQuestionAdder = $("<button type=button class='btn btn-default'>Adicionar pergunta </button>"));
+    $div = $("<div>").append(this.btnSubmit = $("<input type=submit  class='btn btn-primary' alue='Enviar'>"));
+    this.form.append($div);
 
-    this.form.append(this.btnSubmit = $("<input type=submit value='Enviar'>"));
-    this.btnSubmit.data('poll', this);
 
-    this.btnSubmit.on('click', function(e) {
-        e.preventDefault();
+
+
+    this.btnQuestionAdder.data('poll', this).on('click', function() {
+        $(this).data('poll').addQuestion();
+    });
+
+    this.btnSubmit.data('poll', this).on('click', function(e) {
+        //  e.preventDefault();
         $(this).data('poll').submit();
     });
+
+    //default question
+    this.addQuestion();
+
+    this.inpTitle.attr('name', 'title');
+    this.inpDescription.attr('name', 'description');
+    this.inpPrivacy.attr('name', 'privacy');
+
+
 }
+
+Poll.prototype.addQuestion = function() {
+    question = new Question();
+    this.questions.push(question);
+    this.ol.append(question.html());
+    question.inpTitle.focus();
+};
 
 Poll.prototype.html = function() {
     return this.form;
 };
 
 
-Poll.prototype.data = function() {
-    var data = {
-        questions: new Array()
-    };
-    for (i in this.questions) {
-        data.questions.push(this.questions[i].data());
-    }
-    return data;
-};
 
 Poll.prototype.submit = function() {
-    console.dir(JSON.stringify(this.data()));
+    for (q in this.questions) {
+        this.questions[q].setName(q);
+    }
 };
 
 
@@ -196,6 +265,22 @@ $(document).ready(function() {
 
 
     /**
+     * 
+     * 
+     * Answer.prototype.data = function() {
+     return this.input.val();
+     };
+     Poll.prototype.data = function() {
+     var data = {
+     questions: new Array()
+     };
+     for (i in this.questions) {
+     data.questions.push(this.questions[i].data());
+     }
+     return data;
+     };
+     
+     * 
      $("#poll-create").on('click', ".remove-answer", function() {
      $(this).parent().remove();
      });

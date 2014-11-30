@@ -91,3 +91,24 @@ input[type=date], input[type=time], input[type=datetime-local], input[type=month
     border-radius:2px;
     padding: 4px;
 }
+
+
+.create-poll ol{
+    margin:0;
+    padding:0;
+    margin-left:40px;
+}
+
+.create-poll ol li{
+    list-style: none;
+    margin:5px;
+    margin-right:0;
+}
+
+.create-poll .answer-adder{
+    background:#eee;
+}
+
+label input, label textarea, label button{
+    font-weight: normal;
+}
