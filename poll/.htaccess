@@ -1,0 +1,4 @@
+RewriteEngine On    # Turn on the rewriting engine
+
+RewriteCond %{HTTP_HOST} ^127\.0\.0\.1$ [NC] 
+RewriteRule ^(http|https)://(.*)/poll/(.*)$ $1://$2/poll/poll.php?poll=$2   [L,R=301]

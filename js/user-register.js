@@ -6,20 +6,14 @@ function userRegister(form) {
 
 function userLogin(form) {
     $.post("requests/user/login.php", form.serialize()).done(function(data) {
-        if(typeof data === 'object' && data.hasOwnProperty('userid')){
+        if (typeof data === 'object' && data.hasOwnProperty('userid')) {
             alert("LOGGED IN");
             location.reload();
-        }else{
-        alert(data);
+        } else {
+            alert(data);
         }
     });
 }
-/*
- function userLogout(form){
- $.post("requests/user/logout.php", form.serialize()).done(function(data){
- alert(data);
- });
- }*/
 
 
 $(document).ready(function() {
@@ -30,6 +24,6 @@ $(document).ready(function() {
 
     $("#user-login").on('submit', function(event) {
         event.preventDefault();
-       userLogin($(this));
+        userLogin($(this));
     });
 });

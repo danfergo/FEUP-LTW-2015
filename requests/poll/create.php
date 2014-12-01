@@ -18,8 +18,8 @@ while(isset($_POST["question_title_$i"])){
     $poll[] = $question;
     $i++;
 }
+var_dump($poll);
 
 poll_create($poll);
 
-var_dump($poll);
 

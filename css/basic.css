@@ -35,7 +35,7 @@ input[type="date"]::-webkit-input-placeholder{
 }
 
 #page-sidebar{
-    background:#eee;
+   background:#eee;
    
     padding:10px;
     -webkit-transition: all 0.2s ease-in-out;
@@ -48,6 +48,7 @@ input[type="date"]::-webkit-input-placeholder{
     width: 100%;
     max-width: 300px;
 }
+
 
 #page-header{
     height:40px;
