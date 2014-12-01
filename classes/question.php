@@ -15,12 +15,12 @@ class Question {
     }
 
     public static function QuestionInit($questionId, $pollId, $title, $description, $numMaxPossibleChoices, $numMinPossibleChoices) {
-        $question->$questionId = $questionId;
-        $question->$pollId = $pollId;
-        $question->$title = $title;
-        $question->$description = $description;
-        $question->$numMaxPossibleChoices = $numMaxPossibleChoices;
-        $question->$numMinPossibleChoices = $numMinPossibleChoices;
+        $question->questionId = $questionId;
+        $question->pollId = $pollId;
+        $question->title = $title;
+        $question->description = $description;
+        $question->numMaxPossibleChoices = $numMaxPossibleChoices;
+        $question->numMinPossibleChoices = $numMinPossibleChoices;
     }
 
     public function getAnswers() {

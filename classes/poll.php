@@ -16,14 +16,15 @@ class Poll {
         
     }
 
-    static function PollInit($ownerId, $description, $thumbnailURL, $privacy, $createdTime, $updatedTime) {
+    static function PollInit($pollId, $ownerId, $title, $description, $privacy, $createdTime, $updatedTime) {
         $poll = new Poll();
-        $poll->$ownerId = $ownerId;
-        $poll->$description = $description;
-        $poll->$thumbnailURL = $thumbnailURL;
-        $poll->$privacy = $privacy;
-        $poll->$createdTime = $createdTime;
-        $poll->$updatedTime = $updatedTime;
+        $poll->pollId = $pollId;
+        $poll->ownerId = $ownerId;
+        $poll->title = $title;
+        $poll->description = $description;
+        $poll->privacy = $privacy;
+        $poll->createdTime = $createdTime;
+        $poll->updatedTime = $updatedTime;
         return $poll;
     }
 
