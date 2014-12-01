@@ -90,3 +90,16 @@ function poll_vote($pollId, $answers) {
 function poll_update() {
     
 }
+
+
+
+function poll_search($poll_search,$num_results_begin,$num_results_end){
+    $user_id = user_who();
+    if($user_id === null) $user_id = 0; // para mudar
+
+
+    $polls = db_search_polls($poll_search, $user_id,$num_results_begin,$num_results_end);
+
+
+    return $polls;
+}

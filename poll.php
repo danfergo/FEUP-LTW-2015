@@ -6,7 +6,7 @@ require_once ('actions/user.php');
 
 $page = new ZenPage(__FILE__, user_who());
 
-class Poll extends View {
+class PollView extends View {
 
     public function initialize() {
         $this->setTemplate("poll-vote");
@@ -14,5 +14,5 @@ class Poll extends View {
 
 }
 
-$page->setMainView(new Poll());
+$page->setMainView(new PollView());
 $page->echoView();
