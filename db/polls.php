@@ -80,14 +80,31 @@ function db_question_select_byid($id) {
     return $q === false ? null : Question::QuestionInit($q['question_id'], $q['poll_id'], $q['title'], $q['description'], $q['min_possible_choices'], $q['max_possible_choices']);
 }
 
-
 function db_answer_select_byid($id) {
     global $dbh;
 
     $stmt = $dbh->prepare("SELECT * FROM answer WHERE answer_id = ?");
     $stmt->execute(array($id));
     $a = $stmt->fetch();
-    return $a === false ? null : Answer::AnswerInit($a['answer_id'],$a['question_id'],$a['title']);
+    return $a === false ? null : Answer::AnswerInit($a['answer_id'], $a['question_id'], $a['title']);
 }
 
+function db_poll_select_questions($poll) {
+    global $dbh;
 
+    $stmt = $dbh->prepare("SELECT * FROM question WHERE poll_id = ?");
+    $stmt->execute(array($poll->getPollId()));
+    while ($q = $stmt->fetch()) {
+        $poll->addQuestion(Question::QuestionInit($q['question_id'], $q['poll_id'], $q['title'], $q['description'], $q['min_possible_choices'], $q['max_possible_choices']));
+    }
+}
+
+function db_question_select_answers($question) {
+    global $dbh;
+
+    $stmt = $dbh->prepare("SELECT * FROM answer WHERE answer_id = ?");
+    $stmt->execute(array($question->getQuestionId()));
+    while ($a = $stmt->fetch()) {
+        $question->addAnswer(Answer::AnswerInit($a['answer_id'], $a['question_id'], $a['title']));
+    }
+}
