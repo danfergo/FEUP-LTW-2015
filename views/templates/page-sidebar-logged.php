@@ -1,8 +1,17 @@
-<div>
+<?php
+$userName = $this->getPage()->getUser()->getName();
+?> 
+
+
+<section>
+    <p><b>Olá, <?= $userName; ?> </b> </p>
+
+
     <a href="logout.php">   
         <button type="button" class="btn btn-default">LOGOUT</button>
     </a>
-</div>
+
+</section>
 
 
 <nav>
