@@ -1,8 +1,9 @@
 <?php
-require_once (dirname(dirname(__FILE__)).'/db/polls.php');
-require_once (dirname(dirname(__FILE__)).'/classes/poll.php');
-require_once (dirname(dirname(__FILE__)).'/classes/user.php');
-require_once ('user.php');  
+
+require_once (dirname(dirname(__FILE__)) . '/db/polls.php');
+require_once (dirname(dirname(__FILE__)) . '/classes/poll.php');
+require_once (dirname(dirname(__FILE__)) . '/classes/user.php');
+require_once ('user.php');
 
 function arr_at($arr, $pos) {
     if (!isset($arr[$pos])) {
@@ -91,14 +92,24 @@ function poll_update() {
     
 }
 
-
-
-function poll_search($poll_search,$num_results_begin,$num_results_end){
+function poll_search($poll_search, $num_results_begin, $num_results_end) {
     $user_id = user_who() === null ? 0 : user_who()->getUserId();
     // acho que podia ser passado a funcao db_search_polls o user mesmo e lá decidia-se.
 
-    $polls = db_search_polls($poll_search, $user_id,$num_results_begin,$num_results_end);
+    $polls = db_search_polls($poll_search, $user_id, $num_results_begin, $num_results_end);
 
 
     return $polls;
+}
+
+function poll_get($id) {
+    $poll = db_poll_select_byid($id);
+    if ($poll === null) {
+        throw new Exception('POLL_DOES_NOT_EXIST');
+    } 
+    
+    db_poll_select_questions($poll);
+    foreach($poll->getQuestions() as $question){
+        db_question_select_answers($question);
+    }
 }
