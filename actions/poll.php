@@ -94,9 +94,8 @@ function poll_update() {
 
 
 function poll_search($poll_search,$num_results_begin,$num_results_end){
-    $user_id = user_who();
-    if($user_id === null) $user_id = 0; // para mudar
-
+    $user_id = user_who() === null ? 0 : user_who()->getUserId();
+    // acho que podia ser passado a funcao db_search_polls o user mesmo e lá decidia-se.
 
     $polls = db_search_polls($poll_search, $user_id,$num_results_begin,$num_results_end);
 
