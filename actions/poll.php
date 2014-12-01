@@ -112,4 +112,5 @@ function poll_get($id) {
     foreach($poll->getQuestions() as $question){
         db_question_select_answers($question);
     }
+    return $poll;
 }
