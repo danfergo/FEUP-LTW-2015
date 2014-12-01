@@ -167,14 +167,14 @@
         </div>
 
     </div>
-</div>    
+</div>
 
 
 <style>
     #poll-cover{
         background:#eee;
         border-bottom: 1px solid #000;
-        //   margin-bottom: 50px;
+    //   margin-bottom: 50px;
     }
 
 
@@ -196,7 +196,7 @@
         font-size:15px;
 
     }
-    
+
     .questions{
         margin-top:50px;
     }
@@ -204,5 +204,5 @@
     .poll-description{
         padding: 5px;
     }
-    
+
 </style>

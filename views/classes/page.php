@@ -3,7 +3,7 @@ require_once("view.php");
 
 class Page extends View{
 
-    private $user;
+    private $user = null;
     protected $path = "";
     protected $headers = "";
     protected $title = "";

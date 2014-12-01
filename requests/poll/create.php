@@ -12,10 +12,10 @@ while(isset($_POST["question_title_$i"])){
     $j = 0;
 
     while(isset($_POST["answer_{$i}_$j"])){
-        $question[]  = $_POST["answer_{$i}_$j"];
+        $question['answers'][]  = array('title' => $_POST["answer_{$i}_$j"]);
         $j++;
     }
-    $poll[] = $question;
+    $poll['questions'][] = $question;
     $i++;
 }
 var_dump($poll);

@@ -39,25 +39,3 @@ function db_answer_insert($answer){
     $answer->setPollId($dbh->lastInsertId()); 
 }
 
-function db_search_polls($poll_search, $user_id, $num_results_begin, $num_results_end){
-    global $dbh;
-
-    $poll_search = '%' . $poll_search . '%';
-    $stmt = $dbh->prepare("SELECT * FROM poll
-                            WHERE (description LIKE :search OR title LIKE :search )
-                            AND (poll.privacy = 0 OR poll.owner_id = :owner_id)
-                            ORDER BY created_time DESC LIMIT :ini,:fin");
-    //$stmt = $dbh->prepare("SELECT * FROM poll ORDER BY created_time DESC LIMIT :ini,:fin");
-    $stmt->bindParam(':search', $poll_search);
-    $stmt->bindParam(':owner_id', $user_id);
-    $stmt->bindParam(':ini', $num_results_begin);
-    $stmt->bindParam(':fin', $num_results_end);
-    $stmt->execute();
-
-    $polls = array();
-    while ($row = $stmt->fetch()) {
-        array_push($polls,$row);
-    }
-
-    return $polls;
-}
