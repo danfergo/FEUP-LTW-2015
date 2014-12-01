@@ -28,10 +28,14 @@ input[type="date"]::-webkit-input-placeholder{
     #page-sidebar.active{
         left:0;
     }
+    .listPoll {
+        margin-top: 25px;
+        height: 100px;
+    }
 }
 
 #page-sidebar{
-   background:#eee;
+    background:#eee;
    
     padding:10px;
     -webkit-transition: all 0.2s ease-in-out;
@@ -40,7 +44,10 @@ input[type="date"]::-webkit-input-placeholder{
     transition: all 0.2s ease-in-out;
 }
 
-
+#page-sidebar input{
+    width: 100%;
+    max-width: 300px;
+}
 
 #page-header{
     height:40px;
@@ -111,4 +118,10 @@ input[type=date], input[type=time], input[type=datetime-local], input[type=month
 
 label input, label textarea, label button{
     font-weight: normal;
+}
+
+.listPoll {
+    margin-top: 25px;
+    height: 300px;
+
 }
