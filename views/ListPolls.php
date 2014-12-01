@@ -1,8 +1,26 @@
 <?php
 
 require_once('classes/page.php');
-require_once('zenpage.php');
 
+class ListPollView extends View {
+
+    private $polls;
+
+    function __construct($pollsArray) {
+        $this->polls = $pollsArray;
+    }
+
+    public function initialize() {
+        $this->setTemplate('poll-list');
+    }
+
+    public function getPolls() {
+        return $this->polls;
+    }
+
+}
+
+/*
 class ListPolls extends Page {
 
     private $body;
@@ -50,3 +68,4 @@ class ListPolls extends Page {
     }
 
 }
+*/
