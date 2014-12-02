@@ -1,7 +1,7 @@
 <?php
 
 class Question {
-    
+
     private $questionId;
     private $pollId;
     private $title;
@@ -9,7 +9,7 @@ class Question {
     private $numMaxPossibleChoices;
     private $numMinPossibleChoices;
     private $answers = array();
-    
+
     function __construct() {
         
     }
@@ -33,7 +33,6 @@ class Question {
         $this->answers[] = $answer;
     }
 
-        
     public function getQuestionId() {
         return $this->questionId;
     }
@@ -80,6 +79,10 @@ class Question {
 
     public function setNumMinPossibleChoices($numMinPossibleChoices) {
         $this->numMinPossibleChoices = $numMinPossibleChoices;
+    }
+
+    public function data() {
+        return array('question_id' => $this->questionId, 'title' => $this->title, 'description' => $this->description);
     }
 
 }
