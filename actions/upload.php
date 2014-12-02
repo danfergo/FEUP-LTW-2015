@@ -1,16 +1,14 @@
 <?php
 
-function valid_img($tmpName){
+function valid_img($tmpName) {
     
 }
 
-
-
 function save_img($id, $tmpName) {
 
-    $originalFileName = "../img/polls/$id.jpg";
-    $smallFileName = "../img/thumb/$id.jpg";
-   // $mediumFileName = "images/thumbs_medium/$id.jpg";
+    $originalFileName = dirname(dirname(__FILE__)) . "/img/poll/$id.jpg";
+    $smallFileName = dirname(dirname(__FILE__)) . "/img/poll/thumb/$id.jpg";
+    // $mediumFileName = "images/thumbs_medium/$id.jpg";
 
     move_uploaded_file($tmpName, $originalFileName);
 
@@ -27,12 +25,10 @@ function save_img($id, $tmpName) {
 
     //$mediumwidth = $width;
     //$mediumheight = $height;
-
     //if ($mediumwidth > 400) {
     //    $mediumwidth = 400;
     //    $mediumheight = $mediumheight * ( $mediumwidth / $width );
     //}
-
     //$medium = imagecreatetruecolor($m     ediumwidth, $mediumheight);
     //imagecopyresized($medium, $original, 0, 0, 0, 0, $mediumwidth, $mediumheight, $width, $height);
     //imagejpeg($medium, $mediumFileName);
