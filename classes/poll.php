@@ -103,9 +103,9 @@ class Poll {
         $this->updatedTime = $updatedTime;
     }
 
-    public function toJSON(){
-        $data = array('poll_id' => $this->pollId, 'title' =>$this->title, 'description' => $this->description, 'privacy' => $this->privacy);
-        
+    public function data(){
+        return array('poll_id' => $this->pollId, 'title' =>$this->title, 'description' => $this->description);
     }
+    
     
 }
