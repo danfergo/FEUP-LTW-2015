@@ -42,7 +42,7 @@
  return true;
  }*/
 
-
+/**
 function pollSerialize($form) {
     $data = {
         title: "title",
@@ -66,7 +66,7 @@ function pollSerialize($form) {
 
     return $data;
 }
-
+***/
 
 /**** ANSWER ****/
 
@@ -169,9 +169,10 @@ Question.prototype.addAnswer = function() {
 
 
 Question.prototype.rmv = function(answer) {
-    answer.rmv();
+    this.answers.splice(answer.li.index(),1);
     this.selMin.find("option:last").remove();
     this.selMax.find("option:last").remove();
+    answer.rmv();
 };
 
 Question.prototype.data = function() {
