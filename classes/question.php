@@ -8,7 +8,7 @@ class Question {
     private $description;
     private $numMaxPossibleChoices;
     private $numMinPossibleChoices;
-    private $answers;
+    private $answers = array();
     
     function __construct() {
         
