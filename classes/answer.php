@@ -10,9 +10,11 @@ class Answer {
     }
     
     static function AnswerInit($answerId,$questionId,$title){
-        $this->answerId = $answerId;
-        $this->questionId = $questionId;
-        $this->title = $title;
+        $answer = new Answer();
+        $answer->answerId = $answerId;
+        $answer->questionId = $questionId;
+        $answer->title = $title;
+        return $answer;
     }
     
     public function getAnswerId() {
