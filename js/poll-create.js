@@ -43,30 +43,39 @@
  }*/
 
 /**
-function pollSerialize($form) {
-    $data = {
-        title: "title",
-        description: "description",
-        questions: new Array()
-    };
+ function pollSerialize($form) {
+ $data = {
+ title: "title",
+ description: "description",
+ questions: new Array()
+ };
+ 
+ $form.find("li.question").each(function() {
+ $question = {
+ title: "",
+ description: "",
+ answers: new Array()
+ };
+ 
+ $(this).find("li.answer input").each(function() {
+ $question.answers.push($(this).val());
+ });
+ 
+ $data.questions.push($question);
+ });
+ 
+ return $data;
+ }
+ ***/
 
-    $form.find("li.question").each(function() {
-        $question = {
-            title: "",
-            description: "",
-            answers: new Array()
-        };
+ERROR_MESSAGE = false;
+OLD_POLL_DATA = null;
 
-        $(this).find("li.answer input").each(function() {
-            $question.answers.push($(this).val());
-        });
+WARNING = new Array();
+WARNING.INVALID_POLL_TITLE = "O titulo da poll não está direito, fds.";
 
-        $data.questions.push($question);
-    });
 
-    return $data;
-}
-***/
+
 
 /**** ANSWER ****/
 
@@ -169,7 +178,7 @@ Question.prototype.addAnswer = function() {
 
 
 Question.prototype.rmv = function(answer) {
-    this.answers.splice(answer.li.index(),1);
+    this.answers.splice(answer.li.index(), 1);
     this.selMin.find("option:last").remove();
     this.selMax.find("option:last").remove();
     answer.rmv();
@@ -203,22 +212,26 @@ Question.prototype.setName = function(q) {
 
 /**** POLL ****/
 
-function Poll() {
-    this.form = $("<form class=create-poll action=requests/poll/create.php method=post enctype='multipart/form-data'>").append('<div class=form-group><label>Título').append('<div class=form-group><label>Descrição');
+function Poll(errorMsg, oldPollData) {
+    this.form = $("<form class=create-poll action=requests/poll/create.php method=post enctype='multipart/form-data'>");
+    if (typeof errorMsg === "string") {
+        this.form.append($("<div class='alert alert-danger' role=alert><strong>Erro!</strong> " + WARNING[errorMsg]+"</div>"));
+    }
+    this.form.append('<div class=form-group><label>Título').append('<div class=form-group><label>Descrição');
     this.form.find('label:eq(0)').append(this.inpTitle = $('<input type=text class=form-control>'));
     this.form.find('label:eq(1)').append(this.inpDescription = $('<input type=text class=form-control>'));
     this.form.append(this.inpPrivacy = $("<select class=form-control>").append('<option value=0>Publica').append('<option value=1>Privada'));
+    this.inpImg = $('<input type=file class=form-control>');
+    this.form.append('<div class=form-group>').append('<label>Imagem de Capa').append(this.inpImg);
 
     this.form.append($fsQuestions = $("<fieldset>"));
     $fsQuestions.append("<legend><label>Questões");
+
     this.form.append(this.ol = $("<ol>"));
     this.questions = new Array();
     this.form.append(this.btnQuestionAdder = $("<button type=button class='btn btn-default'>Adicionar pergunta </button>"));
     $div = $("<div>").append(this.btnSubmit = $("<input type=submit  class='btn btn-primary' alue='Enviar'>"));
     this.form.append($div);
-
-
-
 
     this.btnQuestionAdder.data('poll', this).on('click', function() {
         $(this).data('poll').addQuestion();
@@ -232,6 +245,7 @@ function Poll() {
     //default question
     this.addQuestion();
 
+    this.inpImg.attr('name', 'image');
     this.inpTitle.attr('name', 'title');
     this.inpDescription.attr('name', 'description');
     this.inpPrivacy.attr('name', 'privacy');
@@ -307,6 +321,6 @@ $(document).ready(function() {
      **/
 
 
-    $("#page-content").append(new Poll().html());
+    $("#poll-create").append(new Poll(ERROR_MESSAGE, OLD_POLL_DATA).html());
 });
 
