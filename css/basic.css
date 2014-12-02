@@ -101,15 +101,13 @@ input[type=date], input[type=time], input[type=datetime-local], input[type=month
 
 
 .create-poll ol{
-    margin:0;
+    margin:0 0 0 40px;
     padding:0;
-    margin-left:40px;
 }
 
 .create-poll ol li{
     list-style: none;
-    margin:5px;
-    margin-right:0;
+    margin:5px 0 5px 5px;
 }
 
 .create-poll .answer-adder{
@@ -123,9 +121,12 @@ label input, label textarea, label button{
 .listPoll {
     margin-top: 25px;
     height: 300px;
-
+    word-wrap: break-word;
 }
 
+.order-buttons{
+    margin-top: 10px;
+}
 
 label{
     width:100%;
