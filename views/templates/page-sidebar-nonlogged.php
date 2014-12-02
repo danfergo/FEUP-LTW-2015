@@ -1,39 +1,39 @@
 <form action="index.php" method="post" id="user-login">
-    <lable>
+    <label>
         Email:<br>
-        <input type="email" name="email">
-    </lable><br>
-    <lable>
+        <input class='form-control' type="email" name="email">
+    </label><br>
+    <label>
         Password:<br>
-        <input type="password" name="password">
-    </lable><br>
-    <input type="submit" value="Login">
+        <input class='form-control' type="password" name="password">
+    </label><br>
+    <input type="submit" class="btn btn-primary" value="Login">
 
 </form>
 
 <br><br><br><br>
 
-<form action="index.php" method="post" id="user-register">
-    <lable>
+<form action="index.php" method="post" id="user-register" class="form-group">
+    <label>
         Nome:<br>
-        <input type="text" name="name">
-    </lable><br>
-    <lable>
+        <input class='form-control' type="text" name="name">
+    </label><br>
+    <label>
         Email:<br>
-        <input type="email" name="email">
-    </lable><br>
-    <lable>
+        <input class='form-control' type="email" name="email">
+    </label><br>
+    <label>
         Password:<br>
-        <input type="password" name="password">
-    </lable><br>
-    <lable>
+        <input class='form-control' type="password" name="password">
+    </label><br>
+    <label>
         Repita a password:<br>
-        <input type="password" name="re_password">
-    </lable><br>
-    <lable>
+        <input class='form-control' type="password" name="re_password">
+    </label><br>
+    <label>
         Data nascimento:<br>
-        <input type="date" name="birthday">
-    </lable><br>
-    <input type="submit" value="Registar">
+        <input class='form-control' type="date" name="birthday">
+    </label><br>
+    <input type="submit" class="btn btn-primary" value="Registar">
 </form>
 
