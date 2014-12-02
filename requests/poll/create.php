@@ -4,6 +4,7 @@ header('Content-type:application/json');
 
 require_once('../../actions/poll.php');
 require_once('../../actions/upload.php');
+require_once('../../actions/sessioning.php');
 
 $pollData = array('title' => $_POST['title'], 'description' => $_POST['description'], 'privacy' => $_POST['privacy'], 'questions' => array());
 
@@ -24,8 +25,16 @@ try {
     valid_img($_FILES['image']['tmp_name']);
     $poll = poll_create($pollData);
     save_img($poll->getPollId(), $_FILES['image']['tmp_name']);
+
+
+    session_setTempData('POLL_CREATE_SUCCESS', $poll->getPollId());
+    header("Location: ../../poll.php?id={$poll->getPollId()}");
 } catch (Exception $e) {
-    
+
+    session_setTempData('POLL_CREATE_ERROR', $e);
+    session_setTempData('POLL_DATA', $pollData);
+
+    header("Location: ../../createpoll.php");
 }
 
 
