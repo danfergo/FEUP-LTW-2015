@@ -25,7 +25,7 @@ function db_question_insert($question) {
         $question->getPollId(),
         $question->getTitle(),
         $question->getDescription()));
-    $question->setPollId($dbh->lastInsertId());
+    $question->setQuestionId($dbh->lastInsertId());
 }
 
 function db_answer_insert($answer) {
@@ -35,7 +35,7 @@ function db_answer_insert($answer) {
     $stmt->execute(array(
         $answer->getQuestionId(),
         $answer->getTitle()));
-    $answer->setPollId($dbh->lastInsertId());
+    $answer->setAnswerId($dbh->lastInsertId());
 }
 
 function db_search_polls($poll_search, $user_id, $num_results_begin, $num_results_end) {
