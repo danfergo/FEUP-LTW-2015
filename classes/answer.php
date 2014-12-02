@@ -42,9 +42,8 @@ class Answer {
     }
 
 
-    public function toJSON(){
-        $data = array('answer_id' => $this->answerId , 'title' => $this->title);
-        return json_encode($data);
+    public function data(){
+        return array('answer_id' => $this->answerId , 'title' => $this->title);
     }
 
 }
