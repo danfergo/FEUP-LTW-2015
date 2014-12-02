@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 require_once('init.php');
 require_once (dirname(dirname(__FILE__)) . '/classes/poll.php');
@@ -102,7 +102,7 @@ function db_poll_select_questions($poll) {
 function db_question_select_answers($question) {
     global $dbh;
 
-    $stmt = $dbh->prepare("SELECT * FROM answer WHERE answer_id = ?");
+    $stmt = $dbh->prepare("SELECT * FROM answer WHERE question_id = ?");
     $stmt->execute(array($question->getQuestionId()));
     while ($a = $stmt->fetch()) {
         $question->addAnswer(Answer::AnswerInit($a['answer_id'], $a['question_id'], $a['title']));
