@@ -19,7 +19,15 @@ function session_setTempData($name, $data) {
 }
 
 function session_getTempData($name) {
-    $data = clone $_SESSION["qnaltw2015_data"][$name];
-    unset($_SESSION["qnaltw2015_data"][$name]);
+    $data = $_SESSION["qnaltw2015_data"][$name];
+
     return $data;
+}
+
+function session_tempDataIsset($name) {
+    return isset($_SESSION["qnaltw2015_data"][$name]);
+}
+
+function session_eraseTempData($name) {
+    unset($_SESSION["qnaltw2015_data"][$name]);
 }
