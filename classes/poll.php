@@ -49,6 +49,9 @@ class Poll {
     }
 
     public function setTitle($title) {
+        if (strlen($title) < 5) {
+            throw new Exception('INVALID_POLL_TITLE');
+        }
         $this->title = $title;
     }
 
