@@ -15,12 +15,14 @@ class Question {
     }
 
     public static function QuestionInit($questionId, $pollId, $title, $description, $numMaxPossibleChoices, $numMinPossibleChoices) {
+        $question = new Question();
         $question->questionId = $questionId;
         $question->pollId = $pollId;
         $question->title = $title;
         $question->description = $description;
         $question->numMaxPossibleChoices = $numMaxPossibleChoices;
         $question->numMinPossibleChoices = $numMinPossibleChoices;
+        return $question;
     }
 
     public function getAnswers() {
