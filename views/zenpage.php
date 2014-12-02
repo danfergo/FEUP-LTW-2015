@@ -54,7 +54,7 @@ class ZenPage extends Page {
     }
 
     public function initialize() {
-        $this->addMetaTag(array('viewport' => 'width=device-width, initial-scale=1'));
+        $this->addMetaTag(array('name'=> 'viewport', 'content' => 'width=device-width, initial-scale=1'));
         $this->addMetaTag(array('http-equiv' => 'X-UA-Compatible', 'content' => 'IE=edge'));
 
         
