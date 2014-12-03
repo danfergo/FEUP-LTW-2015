@@ -14,5 +14,5 @@ if(empty($_POST) || !isset($_POST['name']) || !isset($_POST['email']) || !isset(
 try {
     echo user_register($_POST['name'],$_POST['email'],$_POST['password'],$_POST['birthday'])->toJSON(); 
 } catch (Exception $e) {
-    echo $e->getMessage();
+    echo json_encode($e->getMessage());
 }
