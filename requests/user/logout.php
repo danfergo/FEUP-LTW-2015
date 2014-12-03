@@ -8,5 +8,5 @@ try {
     user_logout();
     echo json_encode('LOGGED_OUT_WITH_SUCCESS');
 } catch (Exception $e) {
-    echo $e->getMessage();
+    echo json_encode($e->getMessage());
 }

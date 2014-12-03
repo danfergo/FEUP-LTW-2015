@@ -3,8 +3,6 @@
 
 require_once('../../actions/user.php');
 
-
-
 // verify post data
 if (empty($_POST) || !isset($_POST['email']) || !isset($_POST['password'])) {
     die();
@@ -14,5 +12,5 @@ if (empty($_POST) || !isset($_POST['email']) || !isset($_POST['password'])) {
 try {
     echo user_login($_POST['email'], $_POST['password'])->toJSON();
 } catch (Exception $e) {
-    echo $e->getMessage();
+    echo json_encode($e->getMessage());
 }
