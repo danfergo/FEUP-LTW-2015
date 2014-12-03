@@ -13,7 +13,6 @@
     </fieldset>
 </form>
 
-<br><br><br><br>
 
 <form action="index.php" method="post" id="user-register" class="form-group">
     <fieldset>
