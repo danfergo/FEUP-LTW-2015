@@ -14,7 +14,7 @@ class Question {
         
     }
 
-    public static function QuestionInit($questionId, $pollId, $title, $description, $numMaxPossibleChoices, $numMinPossibleChoices) {
+    public static function QuestionInit($questionId, $pollId, $title, $description, $numMinPossibleChoices, $numMaxPossibleChoices) {
         $question = new Question();
         $question->questionId = $questionId;
         $question->pollId = $pollId;
@@ -101,6 +101,5 @@ class Question {
         }
         throw new Exception('ANSWER_NOT_FOUND');
     }
-
 
 }
