@@ -97,26 +97,22 @@ function poll_update() {
 
 function poll_search($poll_search, $order, $num_results_begin, $num_results_end) {
     $user_id = user_who() === null ? 0 : user_who()->getUserId();
-// acho que podia ser passado a funcao db_search_polls o user mesmo e lá decidia-se.
-    $orderMember = "";
-    $orderBy = "";
-    if ($order == 0) {
-        $orderMember = "title";
-        $orderBy = "DESC";
-    } elseif ($order == 1) {
-        $orderMember = "title";
-        $orderBy = "ASC";
-    } elseif ($order == 2) {
-        $orderMember = "created_time";
-        $orderBy = "DESC";
-    } elseif ($order == 3) {
-        $orderMember = "created_time";
-        $orderBy = "ASC";
+
+    if($order == 4) {
+        return db_search_polls($poll_search, $user_id, "created_time", "ASC", $num_results_begin, $num_results_end);
     }
-    $polls = db_search_polls($poll_search, $user_id, $orderMember, $orderBy, $num_results_begin, $num_results_end);
-
-
-    return $polls;
+    elseif($order == 0){
+        return db_search_polls($poll_search, $user_id, "title",  "DESC", $num_results_begin, $num_results_end);
+    }
+    elseif($order == 1) {
+        return db_search_polls($poll_search, $user_id, "title", "ASC", $num_results_begin, $num_results_end);
+    }
+    elseif($order == 2) {
+        return db_search_polls($poll_search, $user_id, "created_time", "DESC", $num_results_begin, $num_results_end);
+    }
+    elseif($order == 3) {
+        return db_search_polls($poll_search, $user_id, "created_time", "ASC", $num_results_begin, $num_results_end);
+    }
 }
 
 function poll_get($id) {
