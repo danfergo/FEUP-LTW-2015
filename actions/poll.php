@@ -134,6 +134,7 @@ function poll_get($id) {
 
 function poll_vote_question($questionId, $answers) {
     $question = db_question_select_byid($questionId);
+
     if ($question == null) {
         throw new Exception('QUESTION_NOT_FOUND');
     }
@@ -143,7 +144,7 @@ function poll_vote_question($questionId, $answers) {
     if (count(db_select_voted_question_answersid($question, user_who())) !== 0) {
         throw new Exception('ALERADY_VOTED');
     }
-    if (count($answers) < $question->getNumMinxPossibleChoices() || count($answers) > $question->getNumMaxPossibleChoices()) {
+    if (count($answers) < $question->getNumMinPossibleChoices() || count($answers) > $question->getNumMaxPossibleChoices()) {
         throw new Exception('NR_ANSWERS_OUT_OF_RANGE');
     }
 
@@ -169,7 +170,7 @@ function poll_gen_results($poll) {
 
 function poll_filter_didntvote($poll) {
     foreach ($poll->getQuestions() as $question) {
-        if (count(db_select_voted_question_answersid($question, user_who())) !== 0) {
+        if (user_who() != null && count(db_select_voted_question_answersid($question, user_who())) !== 0) {
             $poll->removeQuestion($question);
         }
     }
