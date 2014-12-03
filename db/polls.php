@@ -46,24 +46,26 @@ function db_search_polls($poll_search, $user_id, $orderMember, $order, $num_resu
 
     $poll_search = "%$poll_search%";
 
-    if ($order == 'DESC') {
+    if($order == 'DESC') {
         $stmt = $dbh->prepare("SELECT * FROM poll
                             WHERE (description LIKE :search OR title LIKE :search )
                             AND (poll.privacy = 0 OR poll.owner_id = :owner_id)
-                            ORDER BY :orderByMember DESC LIMIT :ini,:fin");
-    } elseif ($order == 'ASC') {
-        $stmt = $dbh->prepare("SELECT * FROM poll
-                            WHERE (description LIKE :search OR title LIKE :search )
-                            AND (poll.privacy = 0 OR poll.owner_id = :owner_id)
-                            ORDER BY :orderByMember ASC LIMIT :ini,:fin");
+                            ORDER BY created_time DESC");
     }
+    elseif($order == 'ASC') {
+        $stmt = $dbh->prepare("SELECT * FROM poll
+                            WHERE (description LIKE :search OR title LIKE :search )
+                            AND (poll.privacy = 0 OR poll.owner_id = :owner_id)
+                            ORDER BY created_time ASC");
+    }   /*LIMIT :ini,:fin*/
+    //var_dump($stmt,$poll_search,$user_id,$orderMember,$num_results_begin,$num_results_end);
 
     $stmt->bindParam(':search', $poll_search);
     $stmt->bindParam(':owner_id', $user_id);
-    $stmt->bindParam(':orderByMember', $orderMember);
+    //$stmt->bindParam(':orderByMember', $orderMember);
+    //$stmt->bindParam(':ini', $num_results_begin);
+    //$stmt->bindParam(':fin', $num_results_end);
 
-    $stmt->bindParam(':ini', $num_results_begin);
-    $stmt->bindParam(':fin', $num_results_end);
     $stmt->execute();
     //var_dump($stmt->fetchAll());
     $polls = array();
@@ -71,8 +73,15 @@ function db_search_polls($poll_search, $user_id, $orderMember, $order, $num_resu
         $poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time']);
         array_push($polls, $poll);
     }
-    return $polls;
+    /*if($order == 'DESC'){
+        return array_slice($polls,$num_results_begin,$num_results_end);
+    }*/
+    return array_slice($polls,$num_results_begin,$num_results_end);
 }
+
+/*function db_search_polls($poll_search, $user_id, $orderMember, $order, $num_results_begin, $num_results_end){
+
+}*/
 
 function db_poll_select_byid($id) {
     global $dbh;
