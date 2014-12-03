@@ -85,15 +85,15 @@ function Answer(question) {
     this.li.append(this.input = $("<input type=text class=form-control>"));
 }
 
-Answer.prototype.html = function() {
+Answer.prototype.html = function () {
     return this.li;
 };
 
-Answer.prototype.setName = function(q, a) {
+Answer.prototype.setName = function (q, a) {
     this.input.attr('name', 'answer_' + q + '_' + a);
 };
 
-Answer.prototype.rmv = function() {
+Answer.prototype.rmv = function () {
     this.li.remove();
 };
 
@@ -107,7 +107,7 @@ function RemovableAnswer(question) {
     $wrapper = $("<span class=input-group-btn>").append(this.btnRemove);
 
     this.btnRemove.data('answer', this);
-    this.btnRemove.on('click', function(e) {
+    this.btnRemove.on('click', function (e) {
         e.preventDefault();
         var answer = $(this).data('answer');
         answer.question.rmv(answer);
@@ -122,7 +122,7 @@ function AnswerAdder(question) {
     Answer.call(this, question); // calls supper class constructor
     this.input.addClass("answer-adder");
     this.input.val("Clique para adicionar opção.");
-    this.input.data('question', this.question).on('click keypress', function(e) {
+    this.input.data('question', this.question).on('click keypress', function (e) {
         e.preventDefault();
         $(this).data('question').addAnswer();
     });
@@ -161,12 +161,12 @@ function Question() {
     this.addAnswer();
 }
 
-Question.prototype.html = function() {
+Question.prototype.html = function () {
     return this.li;
 };
 
 
-Question.prototype.addAnswer = function() {
+Question.prototype.addAnswer = function () {
     var answer = this.answers.length < 2 ? new Answer(this) : new RemovableAnswer(this);
     this.answers.push(answer);
     this.answerAdder.html().before(answer.html());
@@ -177,14 +177,14 @@ Question.prototype.addAnswer = function() {
 };
 
 
-Question.prototype.rmv = function(answer) {
+Question.prototype.rmv = function (answer) {
     this.answers.splice(answer.li.index(), 1);
     this.selMin.find("option:last").remove();
     this.selMax.find("option:last").remove();
     answer.rmv();
 };
 
-Question.prototype.data = function() {
+Question.prototype.data = function () {
     var data = {
         title: this.inpTitle.val(),
         answers: new Array()
@@ -196,7 +196,7 @@ Question.prototype.data = function() {
 };
 
 
-Question.prototype.setName = function(q) {
+Question.prototype.setName = function (q) {
     for (a in this.answers) {
         this.answers[a].setName(q, a);
     }
@@ -214,30 +214,34 @@ Question.prototype.setName = function(q) {
 
 function Poll(errorMsg, oldPollData) {
     this.form = $("<form class=create-poll action=requests/poll/create.php method=post enctype='multipart/form-data'>");
+
+    this.form.append($fsPollData = $("<fieldset>").append("<legend>Dados da votação"));
+
     if (typeof errorMsg === "string") {
-        this.form.append($("<div class='alert alert-danger' role=alert><strong>Erro!</strong> " + WARNING[errorMsg]+"</div>"));
+        this.form.append($("<div class='alert alert-danger' role=alert><strong>Erro!</strong> " + WARNING[errorMsg] + "</div>"));
     }
-    this.form.append('<div class=form-group><label>Título').append('<div class=form-group><label>Descrição');
-    this.form.find('label:eq(0)').append(this.inpTitle = $('<input type=text class=form-control>'));
-    this.form.find('label:eq(1)').append(this.inpDescription = $('<input type=text class=form-control>'));
-    this.form.append(this.inpPrivacy = $("<select class=form-control>").append('<option value=0>Publica').append('<option value=1>Privada'));
+    $titlendesc = $('<div class=row>').appendTo($('<div class=container-fluid>').appendTo($fsPollData));
+    $titlendesc.append('<div class="form-group col-md-6 col-xs-12"><label>Título').append('<div class="form-group col-md-6 col-xs-12"><label>Descrição');
+    $fsPollData.find('label:eq(0)').append(this.inpTitle = $('<input type=text class=form-control>'));
+    $fsPollData.find('label:eq(1)').append(this.inpDescription = $('<input type=text class=form-control>'));
+    $fsPollData.append(this.inpPrivacy = $("<select class=form-control>").append('<option value=0>Publica').append('<option value=1>Privada'));
     this.inpImg = $('<input type=file class=form-control>');
-    this.form.append('<div class=form-group>').append('<label>Imagem de Capa').append(this.inpImg);
+    $fsPollData.append('<div class=form-group>').append('<label>Imagem de Capa').append(this.inpImg);
 
     this.form.append($fsQuestions = $("<fieldset>"));
-    $fsQuestions.append("<legend><label>Questões");
+    $fsQuestions.append("<legend>Questões");
 
-    this.form.append(this.ol = $("<ol>"));
+    $fsQuestions.append(this.ol = $("<ol>"));
     this.questions = new Array();
-    this.form.append(this.btnQuestionAdder = $("<button type=button class='btn btn-default'>Adicionar pergunta </button>"));
+    $fsQuestions.append(this.btnQuestionAdder = $("<button type=button class='btn btn-default'>Adicionar pergunta </button>"));
     $div = $("<div>").append(this.btnSubmit = $("<input type=submit  class='btn btn-primary' alue='Enviar'>"));
     this.form.append($div);
 
-    this.btnQuestionAdder.data('poll', this).on('click', function() {
+    this.btnQuestionAdder.data('poll', this).on('click', function () {
         $(this).data('poll').addQuestion();
     });
 
-    this.btnSubmit.data('poll', this).on('click', function(e) {
+    this.btnSubmit.data('poll', this).on('click', function (e) {
         //  e.preventDefault();
         $(this).data('poll').submit();
     });
@@ -253,20 +257,20 @@ function Poll(errorMsg, oldPollData) {
 
 }
 
-Poll.prototype.addQuestion = function() {
+Poll.prototype.addQuestion = function () {
     question = new Question();
     this.questions.push(question);
     this.ol.append(question.html());
     question.inpTitle.focus();
 };
 
-Poll.prototype.html = function() {
+Poll.prototype.html = function () {
     return this.form;
 };
 
 
 
-Poll.prototype.submit = function() {
+Poll.prototype.submit = function () {
     for (q in this.questions) {
         this.questions[q].setName(q);
     }
@@ -275,7 +279,7 @@ Poll.prototype.submit = function() {
 
 
 
-$(document).ready(function() {
+$(document).ready(function () {
 
 
 

@@ -8,7 +8,7 @@ try {
     if (!isset($_GET['id']) || preg_match('/^[1-9][0-9]*$/', $_GET['id']) !== 1) {
         throw new Exception('BAD_POLL_ID_VALUE');
     }
-    $poll = poll_get($_GET['id']);
+    $poll = poll_filter_didntvote(poll_get($_GET['id']));
 } catch (Exception $e) {
     echo "that poll does not exist";
     die();
