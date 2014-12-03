@@ -131,3 +131,7 @@ function poll_get($id) {
     }
     return $poll;
 }
+
+function poll_vote_question($questionId,$answers){
+    
+}
