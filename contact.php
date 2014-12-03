@@ -6,7 +6,7 @@ require_once ('actions/user.php');
 
 $page = new ZenPage(__FILE__, user_who());
 
-class Index extends View {
+class Contact extends View {
 
     public function initialize() {
         
@@ -14,7 +14,7 @@ class Index extends View {
 
 }
 
-$page->setMainView(new Index());
+$page->setMainView(new Contact());
 $page->echoView();
 
 
