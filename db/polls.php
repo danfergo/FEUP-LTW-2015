@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 require_once('init.php');
 require_once (dirname(dirname(__FILE__)) . '/classes/poll.php');
@@ -7,24 +7,27 @@ require_once (dirname(dirname(__FILE__)) . '/classes/question.php');
 
 function db_poll_insert($poll) {
     global $dbh;
+    $t = date('Y-m-d H:i:s');
 
-    $stmt = $dbh->prepare("INSERT INTO poll (owner_id,title,description,privacy)  VALUES (?,?,?,?)");
+    $stmt = $dbh->prepare("INSERT INTO poll (owner_id,title,description,privacy,created_time,updated_time)  VALUES (?,?,?,?,?,?)");
     $stmt->execute(array(
         $poll->getOwnerId(),
         $poll->getTitle(),
         $poll->getDescription(),
-        $poll->getPrivacy()));
+        $poll->getPrivacy(), $t, $t));
     $poll->setPollId($dbh->lastInsertId());
 }
 
 function db_question_insert($question) {
     global $dbh;
 
-    $stmt = $dbh->prepare("INSERT INTO question (poll_id,title,description)  VALUES (?,?,?)");
+    $stmt = $dbh->prepare("INSERT INTO question (poll_id,title,description,min_possible_choices,max_possible_choices)  VALUES (?,?,?,?,?)");
     $stmt->execute(array(
         $question->getPollId(),
         $question->getTitle(),
-        $question->getDescription()));
+        $question->getDescription(),
+        $question->getNumMinPossibleChoices(),
+        $question->getNumMaxPossibleChoices()));
     $question->setQuestionId($dbh->lastInsertId());
 }
 
@@ -43,13 +46,12 @@ function db_search_polls($poll_search, $user_id, $orderMember, $order, $num_resu
 
     $poll_search = "%$poll_search%";
 
-    if($order == 'DESC') {
+    if ($order == 'DESC') {
         $stmt = $dbh->prepare("SELECT * FROM poll
                             WHERE (description LIKE :search OR title LIKE :search )
                             AND (poll.privacy = 0 OR poll.owner_id = :owner_id)
                             ORDER BY :orderByMember DESC LIMIT :ini,:fin");
-    }
-    elseif($order == 'ASC') {
+    } elseif ($order == 'ASC') {
         $stmt = $dbh->prepare("SELECT * FROM poll
                             WHERE (description LIKE :search OR title LIKE :search )
                             AND (poll.privacy = 0 OR poll.owner_id = :owner_id)
@@ -68,7 +70,6 @@ function db_search_polls($poll_search, $user_id, $orderMember, $order, $num_resu
     while ($row = $stmt->fetch()) {
         $poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time']);
         array_push($polls, $poll);
-
     }
     return $polls;
 }
@@ -117,5 +118,37 @@ function db_question_select_answers($question) {
     $stmt->execute(array($question->getQuestionId()));
     while ($a = $stmt->fetch()) {
         $question->addAnswer(Answer::AnswerInit($a['answer_id'], $a['question_id'], $a['title']));
+    }
+}
+
+function db_select_voted_question_answersid($question, $owner) {
+    global $dbh;
+
+    $stmt = $dbh->prepare("SELECT * FROM answer_chosen WHERE question_id = ? AND user_id = ?");
+    $stmt->execute(array($question->getQuestionId(), $owner->getUserId()));
+    $result = array();
+    while ($a = $stmt->fetch()) {
+        $result[] = $a['question_id'];
+    }
+    return $result;
+}
+
+function db_question_select_results($question) {
+    global $dbh;
+
+    $stmt = $dbh->prepare("SELECT * FROM num_answer WHERE question_id = ?");
+    $stmt->execute(array($question->getQuestionId()));
+    while ($a = $stmt->fetch()) {
+        $question->getAnswer($a['answer_id'])->setNrOfVotes($a['count']);
+    }
+}
+
+function db_votes_insert($user, $answersId) {
+    global $dbh;
+
+    $stmt = $dbh->prepare("INSERT INTO choose_answer (user_id,answer_id)  VALUES (?,?)");
+
+    foreach ($answersId as $aid) {
+        $stmt->execute(array($userid, $aid));
     }
 }

@@ -6,17 +6,27 @@ require_once('../../actions/poll.php');
 require_once('../../actions/upload.php');
 require_once('../../actions/sessioning.php');
 
-$pollData = array('title' => $_POST['title'], 'description' => $_POST['description'], 'privacy' => $_POST['privacy'], 'questions' => array());
+$pollData = array(
+    'title' => $_POST['title'],
+    'description' => $_POST['description'],
+    'privacy' => $_POST['privacy'],
+    'questions' => array());
 
 $i = 0;
 while (isset($_POST["question_title_$i"])) {
-    $question = array("title" => $_POST["question_title_$i"], "description" => $_POST["question_description_$i"], 'answers' => array());
-    $j = 0;
+    $question = array(
+        'title' => $_POST["question_title_$i"],
+        'description' => $_POST["question_description_$i"],
+        'min' => $_POST["question_min_$i"],
+        'max' => $_POST["question_max_$i"],
+        'answers' => array());
 
+    $j = 0;
     while (isset($_POST["answer_{$i}_$j"])) {
         $question['answers'][] = array('title' => $_POST["answer_{$i}_$j"]);
         $j++;
     }
+    
     $pollData['questions'][] = $question;
     $i++;
 }

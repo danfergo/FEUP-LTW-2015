@@ -85,4 +85,22 @@ class Question {
         return array('question_id' => $this->questionId, 'title' => $this->title, 'description' => $this->description);
     }
 
+    public function results() {
+        $results = array('question_id' => $this->questionId, 'title' => $this->title, 'answers' => array());
+        foreach ($this->answers as $answer) {
+            $results['answers'][] = $answer->results();
+        }
+        return $results;
+    }
+
+    public function getAnswer($answerId) {
+        foreach ($this->answers as $answer) {
+            if ($answer->getId() === $answerId) {
+                return $answer;
+            }
+        }
+        throw new Exception('ANSWER_NOT_FOUND');
+    }
+
+
 }

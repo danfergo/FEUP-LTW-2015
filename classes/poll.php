@@ -5,7 +5,6 @@ class Poll {
     private $pollId;
     private $ownerId;
     private $description;
-    private $thumbnailURL;
     private $privacy;
     private $createdTime;
     private $updatedTime;
@@ -34,6 +33,16 @@ class Poll {
 
     public function addQuestion($question) {
         $this->questions[] = $question;
+    }
+
+    public function removeQuestion($q) {
+        $i = 0;
+        foreach ($this->questions as $question) {
+            if ($question->getQuestionId() == $q->getQuestionId()) {
+                array_splice($this->questions, $i, 1);
+            }
+            $i++;
+        }
     }
 
     public function getPollId() {
@@ -103,9 +112,8 @@ class Poll {
         $this->updatedTime = $updatedTime;
     }
 
-    public function data(){
-        return array('poll_id' => $this->pollId, 'title' =>$this->title, 'description' => $this->description);
+    public function data() {
+        return array('poll_id' => $this->pollId, 'title' => $this->title, 'description' => $this->description);
     }
-    
-    
+
 }
