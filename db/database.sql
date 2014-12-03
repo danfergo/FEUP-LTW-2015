@@ -43,7 +43,6 @@ CREATE TABLE  answer (
 CREATE TABLE  choose_answer (
   user_id INTEGER REFERENCES user(user_id),
   answer_id INTEGER REFERENCES answer(answer_id),
-  title TEXT,
   PRIMARY KEY (user_id,answer_id)
 );
 
@@ -57,10 +56,10 @@ CREATE TABLE messages (
 
 
 CREATE VIEW answer_chosen AS
-  SELECT question.question_id,answer.answer_id,poll_id,user_id
+  SELECT question.question_id,answer.answer_id,question.poll_id,choose_answer.user_id
   FROM answer, question, choose_answer
   WHERE answer.question_id = question.question_id
-        AND choose_answer.user_id = answer.answer_id
+        AND choose_answer.answer_id = answer.answer_id
 ;
 
 CREATE VIEW num_answer AS
