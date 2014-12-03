@@ -128,7 +128,7 @@ function db_select_voted_question_answersid($question, $owner) {
     $stmt->execute(array($question->getQuestionId(), $owner->getUserId()));
     $result = array();
     while ($a = $stmt->fetch()) {
-        $result[] = $a['question_id'];
+        $result[] = $a['answer_id'];
     }
     return $result;
 }
@@ -139,7 +139,7 @@ function db_question_select_results($question) {
     $stmt = $dbh->prepare("SELECT * FROM num_answer WHERE question_id = ?");
     $stmt->execute(array($question->getQuestionId()));
     while ($a = $stmt->fetch()) {
-        $question->getAnswer($a['answer_id'])->setNrOfVotes($a['count']);
+        $question->getAnswer($a['answer_id'])->setNrOfVotes($a['counter']);
     }
 }
 
@@ -149,6 +149,6 @@ function db_votes_insert($user, $answersId) {
     $stmt = $dbh->prepare("INSERT INTO choose_answer (user_id,answer_id)  VALUES (?,?)");
 
     foreach ($answersId as $aid) {
-        $stmt->execute(array($userid, $aid));
+        $stmt->execute(array($user->getUserId(), $aid));
     }
 }
