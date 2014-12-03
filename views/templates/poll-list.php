@@ -35,9 +35,10 @@ $disableForwards = (count($this->getPolls()) < 12 ? 'class="disabled"' : "");
     </div>
     <?php foreach ($this->getPolls() as $index => $poll) { ?>
         <article class="col-md-4 col-lg-3 col-xs-12 listPoll">
+            <img src="img/poll/thumb/<?=$poll->getPollId()?>.jpg" height="200px" width="200px">
             <header><h4><a href="poll.php?id=<?=$poll->getPollId()?>" ><?=$poll->getTitle()?></a></h4></header>
             <h5><?=$poll->getDescription()?></h5>
-            <h5><?=$poll->getCreatedTime()?></h5>
+            <p><small><?=$poll->getCreatedTime()?></small></p>
         </article>
     <?php }
 
