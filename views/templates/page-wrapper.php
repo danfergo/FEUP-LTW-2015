@@ -23,11 +23,3 @@
     </div>
 </div>
 
-<script>
-    $('#nav-toggler').click(function () {
-        $("#page-sidebar").toggleClass("active");
-        $("#shaddowing").toggleClass("active");
-
-        $(this).toggleClass("active");
-    });
-</script>
