@@ -1,4 +1,5 @@
 <?php
+ header('Content-type:application/json');
 
 require_once('../../actions/poll.php');
 
@@ -18,7 +19,6 @@ if (isset($_POST['data'])) {
     $data['errors_voting'] = array();
     $data = json_decode($_POST['data'],true);
     foreach ($data as $question) {
-        echo "kkk";
         if ($question['question_id'] && $question['answers'] && is_array($question['answers'])) {
             try {
                 poll_vote_question($question['question_id'], $question['answers']);
