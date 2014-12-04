@@ -29,6 +29,7 @@ class PollView extends View {
     public function initialize() {
         $this->getPage()->setPageTitle($this->poll->getTitle());
         $this->setTemplate("poll");
+        $this->getPage()->addJavascriptSrc('js/chart.js');
     }
 
     function getPoll() {
