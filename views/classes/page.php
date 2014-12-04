@@ -66,6 +66,9 @@ class Page extends View{
         parent::echoView();
     }
 
+    function getPath(){
+        return $this->path;
+    }
 }
 
 
