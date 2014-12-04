@@ -17,18 +17,19 @@ if(isset($_GET['order'])){
 }
 else $order = '0';
 
-$pollsearch = poll_search($_GET['search'],$order, $numPage*12, $numPage*12 + 12);
+$pollSearch = poll_search($_GET['search'],$order, $numPage*12, $numPage*12 + 12);
 $page = new ZenPage(__FILE__, user_who());
 
 class SearchView extends ListPollView {
 
-    private $search = '';
+    private $type = 'search.php?search=';
+    private $parameter = '';
     private $order = 0;
     private $numPage = 0;
 
-    public function __construct($pollsArray,$search,$order,$numPage) {
+    public function __construct($pollsArray,$parameter,$order,$numPage) {
         parent::__construct($pollsArray);
-        $this->search = $search;
+        $this->parameter = $parameter;
         $this->order = $order;
         $this->numPage = $numPage;
     }
@@ -38,17 +39,22 @@ class SearchView extends ListPollView {
         $this->getPage()->setPageTitle("Pesquisa de Votações");
     }
 
-    public function getSearch() {
-        return $this->search;
+    public function getType() {
+        return $this->type;
     }
-    public function getOrder() {
 
+    public function getParameter() {
+        return $this->parameter;
+    }
+
+    public function getOrder() {
         return $this->order;
     }
+
     public function getNumPage() {
         return $this->numPage;
     }
 }
 
-$page->setMainView(new SearchView($pollsearch,$search,$order, $numPage));
+$page->setMainView(new SearchView($pollSearch,$search,$order, $numPage));
 $page->echoView();

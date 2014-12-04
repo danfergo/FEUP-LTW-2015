@@ -1,34 +1,62 @@
-<div>
-<form>
+<style>
 
-<fieldset>
-<legend>Personal information</legend>
-<label><p>Name:</p>
-<input type="text" required>
-</label>
+    /*fieldset{
+        margin-top: 10px;
+    }
 
-<label><p>E-mail:</p>
-<input type="mail" required>
-</label></fieldset>
+    fieldset:first-of-type{
+        margin-top: 0px;
+    }
 
-<fieldset>
-<legend>Destionation information</legend>
-<p>Contacto:</p>
+    #submitmessage{
+        //margin-top: 5px;
+    }*/
 
-<select>
-  <option value="None" selected>Choose Destination</option>
-  <option value="Daniel">up201306839@fe.up.pt</option>
-  <option value="Diogo">up201106586@fc.up.pt</option>
-  <option value="Nelson">ei12094@fe.up.pt</option>
-</select>
+</style>
 
-<label><p>Subject:</p>
-<input type="text" required>
-</label>
+<section>
+    <form>
 
-<p>Mensagem:</p>
-<textarea rows="8" cols="50"></textarea></fieldset>
-<input type="submit" value="Submit">
-</form>
+        <fieldset>
+            <legend>Informação Pessoal</legend>
+            <div class="container-fluid">
+                <label>Nome:
+                    <input type="text" name="username" required="required">
+                </label>
+            </div>
 
-</div>
+            <div class="container-fluid">
+                <label>E-mail:
+                    <input type="mail" name="email" required="required">
+                </label>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Informação a Enviar</legend>
+
+            <div class="container-fluid">
+                <label>Assunto:
+                    <select>
+                        <option value="bug" selected>Reportar Erros</option>
+                        <option value="poll">Reportar Questionáio</option>
+                        <option value="sugestion">Sugestão</option>
+                        <option value="doubt">Dúvida</option>
+                        <option value="other" selected="selected">Outro Assunto</option>
+                    </select>
+                </label>
+            </div>
+
+            <br>
+
+            <div class="container-fluid">
+                <label>Mensagem:
+                    <textarea name="message" rows="8" cols="50" required="required"></textarea>
+                </label>
+            </div>
+
+        </fieldset>
+        <input id="submitmessage" type="submit" value="Enviar">
+    </form>
+
+</section>

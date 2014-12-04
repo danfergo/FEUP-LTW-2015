@@ -46,42 +46,72 @@ function db_search_polls($poll_search, $user_id, $orderMember, $order, $num_resu
 
     $poll_search = "%$poll_search%";
 
-    if($order == 'DESC') {
+    if($order == "DESC") {
         $stmt = $dbh->prepare("SELECT * FROM poll
                             WHERE (description LIKE :search OR title LIKE :search )
-                            AND (poll.privacy = 0 OR poll.owner_id = :owner_id)
-                            ORDER BY created_time DESC");
+                                  AND (poll.privacy = 0 OR poll.owner_id = :owner_id)
+                            ORDER BY ". $orderMember ." DESC");
     }
-    elseif($order == 'ASC') {
+    elseif($order == "ASC") {
         $stmt = $dbh->prepare("SELECT * FROM poll
                             WHERE (description LIKE :search OR title LIKE :search )
-                            AND (poll.privacy = 0 OR poll.owner_id = :owner_id)
-                            ORDER BY created_time ASC");
-    }   /*LIMIT :ini,:fin*/
-    //var_dump($stmt,$poll_search,$user_id,$orderMember,$num_results_begin,$num_results_end);
-
+                                  AND (poll.privacy = 0 OR poll.owner_id = :owner_id)
+                            ORDER BY ". $orderMember ." ASC");
+    }
     $stmt->bindParam(':search', $poll_search);
     $stmt->bindParam(':owner_id', $user_id);
-    //$stmt->bindParam(':orderByMember', $orderMember);
-    //$stmt->bindParam(':ini', $num_results_begin);
-    //$stmt->bindParam(':fin', $num_results_end);
-
     $stmt->execute();
-    //var_dump($stmt->fetchAll());
+
     $polls = array();
     while ($row = $stmt->fetch()) {
         $poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time']);
         array_push($polls, $poll);
     }
-    /*if($order == 'DESC'){
-        return array_slice($polls,$num_results_begin,$num_results_end);
-    }*/
+
     return array_slice($polls,$num_results_begin,$num_results_end);
 }
 
-/*function db_search_polls($poll_search, $user_id, $orderMember, $order, $num_results_begin, $num_results_end){
+function db_most_popular_polls($poll_search, $user_id, $type){
+    global $dbh;
 
-}*/
+    $poll_search = "%$poll_search%";
+    $notFromHistory = $type == "history" ? "" : "poll.privacy = 0 OR poll.owner_id = :user_id OR ";
+
+    $stmt = $dbh->prepare("SELECT DISTINCT poll.title,poll.created_time,poll.description,poll.privacy,poll.created_time,poll.updated_time,poll.owner_id ,num_answer.poll_id,num_answer.counter
+                            FROM num_answer, poll, choose_answer
+                            WHERE num_answer.poll_id = poll.poll_id AND num_answer.answer_id = choose_answer.answer_id
+                                  AND (poll.description LIKE :search OR poll.title LIKE :search)
+                                  AND (" . $notFromHistory . "choose_answer.user_id = :user_id)
+                            ORDER BY counter DESC");                //,num_answer.question_id,num_answer.answer_id,
+    $stmt->bindParam(':search', $poll_search);
+    $stmt->bindParam(':user_id', $user_id);
+    $stmt->execute();
+
+    $polls = array();
+    while ($row = $stmt->fetch()) {
+        $poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time']);
+        array_push($polls, $poll);
+    }
+    return $polls;
+}
+
+function db_get_polls_answered_by_user($user_id, $orderMember){
+    global $dbh;
+
+
+    $stmt = $dbh->prepare("SELECT DISTINCT poll_id,user_id FROM answer_chosen
+                            WHERE user_id = :user_id
+                            ORDER BY :order_member DESC");
+    $stmt->bindParam(':user_id', $user_id);
+    $stmt->bindParam(':order_member', $orderMember);
+    $stmt->execute();
+
+    $polls = array();
+    while ($row = $stmt->fetch()) {
+        array_push($polls, $row);
+    }
+    return $polls;
+}
 
 function db_poll_select_byid($id) {
     global $dbh;
