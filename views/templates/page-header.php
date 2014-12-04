@@ -6,7 +6,8 @@
                     <img src="img/btn_menu2.png">
                 </button>
                 <a id="logo" href="index.php">
-                    <img src="img/randomlogo.png" alt="Logo of the website" height="32" width="32">
+                    <img src="img/icon_logo_small.png" alt="Icon of the website" height="31" width="31">
+                    <img src="img/logo.png" id="logo-text" alt="Logo of the website" height="38" width="190">
                 </a>
             </div>
             <div class="col-md-2 col-xs-0"></div>
@@ -28,14 +29,14 @@
 </div>
 
 <script type="text/javascript">
-    $('#nav-toggler').click(function () {
+    $('#nav-toggler').click(function() {
         $("#page-sidebar").toggleClass("active");
         $("#shaddowing").toggleClass("active");
 
         $(this).toggleClass("active");
 
 
-        $('#shaddowing').click(function () {
+        $('#shaddowing').click(function() {
             $("#nav-toggler").trigger("click");
         });
     });
