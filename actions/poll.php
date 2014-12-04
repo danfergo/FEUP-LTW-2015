@@ -73,28 +73,6 @@ function poll_delete($pollId) {
 // calls db delete poll.
 }
 
-/**
- * 
- * @param integer $pollId 
- * @param array $answers Array of answers. answer is an array of questionId and answerId
- */
-function poll_vote($pollId, $answers) {
-// verifies if user is logged in
-// verifies if poll exists
-// verifies if user already voted on that poll
-// foreach question, for each answer
-// verfies if question belongs to poll
-// verifies if answer belongs to question
-// votes on the poll.
-}
-
-/**
- * 
- */
-function poll_update() {
-    
-}
-
 function poll_search($poll_search, $order, $num_results_begin, $num_results_end) {
     $user_id = user_who() === null ? 0 : user_who()->getUserId();
 
