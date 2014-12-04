@@ -77,20 +77,67 @@ function poll_search($poll_search, $order, $num_results_begin, $num_results_end)
     $user_id = user_who() === null ? 0 : user_who()->getUserId();
 
     if($order == 4) {
-        return db_search_polls($poll_search, $user_id, "created_time", "ASC", $num_results_begin, $num_results_end);
+        $polls = db_most_popular_polls($poll_search, $user_id, "search");
+        return array_slice($polls,$num_results_begin,$num_results_end);
     }
     elseif($order == 0){
-        return db_search_polls($poll_search, $user_id, "title",  "DESC", $num_results_begin, $num_results_end);
+        return db_search_polls($poll_search, $user_id, 'title', "DESC", $num_results_begin, $num_results_end);
     }
     elseif($order == 1) {
-        return db_search_polls($poll_search, $user_id, "title", "ASC", $num_results_begin, $num_results_end);
+        return db_search_polls($poll_search, $user_id, 'title', "ASC", $num_results_begin, $num_results_end);
     }
     elseif($order == 2) {
-        return db_search_polls($poll_search, $user_id, "created_time", "DESC", $num_results_begin, $num_results_end);
+        return db_search_polls($poll_search, $user_id, 'created_time', "DESC", $num_results_begin, $num_results_end);
     }
     elseif($order == 3) {
-        return db_search_polls($poll_search, $user_id, "created_time", "ASC", $num_results_begin, $num_results_end);
+        return db_search_polls($poll_search, $user_id, 'created_time', "ASC", $num_results_begin, $num_results_end);
     }
+}
+
+function poll_user_history($order,$num_results_begin,$num_results_end){
+    $user_id = user_who() === null ? 0 : user_who()->getUserId();
+
+    if($order == 4) {
+        $polls = db_most_popular_polls("", $user_id, "history");
+        return array_slice($polls,$num_results_begin,$num_results_end);
+    }
+    elseif($order == 0){
+        $ids = db_get_polls_answered_by_user($user_id,"title"); //DESC
+        $polls = array();
+        foreach($ids as $index=>$id){
+            $poll = db_poll_select_byid($id['poll_id']);
+            array_push($polls, $poll);
+        }
+        return array_slice($polls,$num_results_begin,$num_results_end);
+    }
+    elseif($order == 1) {
+        $ids = db_get_polls_answered_by_user($user_id,"title"); //ASC
+        $polls = array();
+        foreach($ids as $index=>$id){
+            $poll = db_poll_select_byid($id['poll_id']);
+            array_push($polls, $poll);
+        }
+        return array_slice(array_reverse($polls),$num_results_begin,$num_results_end);
+    }
+    elseif($order == 2) {
+        $ids = db_get_polls_answered_by_user($user_id,"created_time"); //DESC
+        $polls = array();
+        foreach($ids as $index=>$id){
+            $poll = db_poll_select_byid($id['poll_id']);
+            array_push($polls, $poll);
+        }
+        return array_slice($polls,$num_results_begin,$num_results_end);
+    }
+    elseif($order == 3) {
+        $ids = db_get_polls_answered_by_user($user_id,"created_time"); //ASC
+        $polls = array();
+        foreach($ids as $index=>$id){
+            $poll = db_poll_select_byid($id['poll_id']);
+            array_push($polls, $poll);
+        }
+        return array_slice(array_reverse($polls),$num_results_begin,$num_results_end);
+    }
+    return 0;
 }
 
 function poll_get($id) {

@@ -106,7 +106,7 @@ label input, label textarea, label button{
 
 .listPoll {
     margin-top: 25px;
-    height: 300px;
+    height: 300px; /* AUMENTAR*/
     word-wrap: break-word;
 }
 
@@ -203,7 +203,12 @@ label{
     }
     .listPoll {
         margin-top: 25px;
-        height: 100px;
+        height: 300px;
+    }
+
+    .listPoll img{
+        float: left;
+        margin-right: 30px;
     }
 
 
