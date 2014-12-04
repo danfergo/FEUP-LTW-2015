@@ -1,73 +1,3 @@
-
-/*var question_num = 1;
- 
- function addAnswer(num) {
- $('#Answers_' + num + ' li:last').after();
- maxAnswers(num);
- }
- 
- function addQuestion() {
- $('#Questions div:last').after('<div><li><label><strong>Question </strong><input type="text" id="question_1" name="question_1" required="required"></label><button onclick="removeQuestion(1); return false;"><strong>-</stron></button><br><label>Number of min answers:<input value="1" type="number" id="min_answers_0" name="min_answers" min="1" max="2"></label><label>Number of max answers:<input value="1" type="number" id="max_answers_0" name="max_answers" min="1" max="2"></label><ol id="Answers_1"><li><label><strong>Answer </strong><input type="text" name="answer_1_1" name="answer_1_1" required="required"><button onclick="removeAnswer(1); return false;"><strong>-</strong></button></label></li><li><label><strong>Answer </strong><input type="text" name="answer_' + question_num + '_2" name="answer_' + question_num + '_2" required="required"><button onclick="removeAnswer(2); return false;"><strong>-</strong></button></label></li><button onclick="addAnswer(); return false;"><strong>+</strong></button></ol></li></div>');
- num_question++;
- }
- 
- function removeAnswer(num) {
- if ($('#Answers_' + num + '> li').length > 2)
- $('#Answers_' + num + ' li:last').remove();
- maxAnswers(num);
- }
- 
- function removeQuestion(num) {
- if (num_question > 1) {
- $('#Questions div:last').remove();
- }
- }
- 
- function maxAnswers(num) { //atualiza o atributo 'max' no numero de respotas
- var size = $('#Answers_' + num + '> li').length;
- $('#min_answers_' + num).attr('max', size);
- $('#max_answers_' + num).attr('max', size);
- }
- 
- function validateForm() {
- var i;
- for (i = 1; i <= num_question; i++) {
- var size1 = $('#min_answers_' + i).val();
- var size2 = $('#max_answers_' + i).val();
- if (size1 > size2) {
- //alert("O minimo é maior que o máximo.")
- return false;
- }
- }
- return true;
- }*/
-
-/**
- function pollSerialize($form) {
- $data = {
- title: "title",
- description: "description",
- questions: new Array()
- };
- 
- $form.find("li.question").each(function() {
- $question = {
- title: "",
- description: "",
- answers: new Array()
- };
- 
- $(this).find("li.answer input").each(function() {
- $question.answers.push($(this).val());
- });
- 
- $data.questions.push($question);
- });
- 
- return $data;
- }
- ***/
-
 ERROR_MESSAGE = false;
 OLD_POLL_DATA = null;
 
@@ -103,7 +33,7 @@ function RemovableAnswer(question) {
     Answer.call(this, question); // calls supper class constructor
 
     this.li.addClass("input-group");
-    this.btnRemove = $("<button class='btn btn-default'>").append("<span class='glyphicon glyphicon-remove'>");
+    this.btnRemove = $("<button class='btn btn-default' tabindex='-1'>").append("<span class='glyphicon glyphicon-remove'>");
     $wrapper = $("<span class=input-group-btn>").append(this.btnRemove);
 
     this.btnRemove.data('answer', this);
@@ -122,8 +52,7 @@ function AnswerAdder(question) {
     Answer.call(this, question); // calls supper class constructor
     this.input.addClass("answer-adder");
     this.input.val("Clique para adicionar opção.");
-    this.input.data('question', this.question).on('click keypress', function (e) {
-        e.preventDefault();
+    this.input.data('question', this.question).on('click keydown', function (e) {
         $(this).data('question').addAnswer();
     });
 }
@@ -136,24 +65,31 @@ function Question() {
 
     this.li = $("<li>");
     $area = $("<div class=container-fluid>");
+    
     $col = $("<div class='col-md-6 col-xs-12'>").append("<label class='col-md-4 control-label'>").append("<div class=col-md-8>");
-    $area.append($col1 = $col.clone()).append($col2 = $col.clone());
+    $area0 = $area.clone().append("<div class='col-md-10 col-xs-12'>").append("<div class='col-md-2 col-xs-12 text-right'>");
+    
+    $area1 = $area.clone().append($col1 = $col.clone()).append($col2 = $col.clone());
+    $area2 = $area.clone().append($col3 = $col.clone()).append($col4 = $col.clone());
 
-
-    $col1.find("label").html("Minimo de opções:");
-    $col2.find("label").html("Máximo de opções:");
-
-    this.selMin = $('<select class=form-control>').appendTo($col1.find("div"));
-    this.selMax = $('<select class=form-control>').appendTo($col2.find("div"));
-
-    this.li.append(this.inpTitle = $('<input type=text class=form-control>'));
-    this.li.append(this.inpDescription = $('<input type=text class=form-control>'));
+    $col1.find("label").html("Título:");
+    $col2.find("label").html("Texto de ajuda:");
+    this.inpTitle = $('<input type=text class=form-control>').appendTo($col1.find("div"));
+    this.inpDescription = $('<input type=text class=form-control>').appendTo($col2.find("div"));
+    
+    $col3.find("label").html("Nº minimo de opções:");
+    $col4.find("label").html("Nº máximo de opções:");
+    this.selMin = $('<select class=form-control>').appendTo($col3.find("div"));
+    this.selMax = $('<select class=form-control>').appendTo($col4.find("div"));
+    
+    $area0.children('div:eq(1)').append(this.btnRemove = $('<input type=button class="btn btn-default" value="Remover Pergunta">'));
+    
+    this.li.append($area0).append($area1).append($area2);
     this.li.append(this.ol = $("<ol>"));
     this.answers = new Array();
     this.answerAdder = new AnswerAdder(this);
     this.ol.append(this.answerAdder.html());
 
-    this.li.append($area);
 
 
     // default answers
@@ -220,20 +156,33 @@ function Poll(errorMsg, oldPollData) {
     if (typeof errorMsg === "string") {
         this.form.append($("<div class='alert alert-danger' role=alert><strong>Erro!</strong> " + WARNING[errorMsg] + "</div>"));
     }
-    $titlendesc = $('<div class=row>').appendTo($('<div class=container-fluid>').appendTo($fsPollData));
-    $titlendesc.append('<div class="form-group col-md-6 col-xs-12"><label>Título').append('<div class="form-group col-md-6 col-xs-12"><label>Descrição');
-    $fsPollData.find('label:eq(0)').append(this.inpTitle = $('<input type=text class=form-control>'));
-    $fsPollData.find('label:eq(1)').append(this.inpDescription = $('<input type=text class=form-control>'));
-    $fsPollData.append(this.inpPrivacy = $("<select class=form-control>").append('<option value=0>Publica').append('<option value=1>Privada'));
-    this.inpImg = $('<input type=file class=form-control>');
-    $fsPollData.append('<div class=form-group>').append('<label>Imagem de Capa').append(this.inpImg);
 
+    $container = $('<div class=container-fluid>').appendTo($fsPollData);
+    $row = $('<div class=row>');
+    $cell = $('<div class="form-group col-md-6 col-xs-12">');
+    $lbl = $('<label>');
+    $row1 = $row.clone().appendTo($container).append($cell.clone()).append($cell.clone());
+    $row2 = $row.clone().appendTo($container).append($cell.clone()).append($cell.clone());
+
+
+    $cell11 = $lbl.clone().appendTo($row1.children('div:eq(0)')).append('Título');
+    $cell12 = $lbl.clone().appendTo($row1.children('div:eq(1)')).append('Descrição');
+    $cell21 = $lbl.clone().appendTo($row2.children('div:eq(0)'));
+    $cell22 = $lbl.clone().appendTo($row2.children('div:eq(1)'));
+
+    $cell11.append(this.inpTitle = $('<input type=text class=form-control>'));
+    $cell12.append(this.inpDescription = $('<input type=text class=form-control>'));
+    this.inpImg = $('<input type=file class=form-control>');
+    $cell21.append('<label>Imagem').append(this.inpImg);
+    $cell22.append('Privacidade<br><br>').append(this.inpPrivacy = $("<input type=checkbox>")).append(' Votação privada. (não aparcerá nos resultados de pesquisa)');
+
+    
     this.form.append($fsQuestions = $("<fieldset>"));
     $fsQuestions.append("<legend>Questões");
 
-    $fsQuestions.append(this.ol = $("<ol>"));
+    $fsQuestions.append(this.ol = $("<ol>").addClass('questions'));
     this.questions = new Array();
-    $fsQuestions.append(this.btnQuestionAdder = $("<button type=button class='btn btn-default'>Adicionar pergunta </button>"));
+    $fsQuestions.append(this.btnQuestionAdder = $("<input type=button class='btn btn-default' value='Adicionar pergunta'>"));
     $div = $("<div>").append(this.btnSubmit = $("<input type=submit  class='btn btn-primary' alue='Enviar'>"));
     this.form.append($div);
 
@@ -282,47 +231,6 @@ Poll.prototype.submit = function () {
 $(document).ready(function () {
 
 
-
-    /**
-     * 
-     * 
-     * Answer.prototype.data = function() {
-     return this.input.val();
-     };
-     Poll.prototype.data = function() {
-     var data = {
-     questions: new Array()
-     };
-     for (i in this.questions) {
-     data.questions.push(this.questions[i].data());
-     }
-     return data;
-     };
-     
-     * 
-     $("#poll-create").on('click', ".remove-answer", function() {
-     $(this).parent().remove();
-     });
-     
-     $("#poll-create").on('click', ".add-answer", function() {
-     $(this).parent().before('<li><input type="text"> <button class="remove-answer">-</button></li>');
-     });
-     
-     $("#poll-create").on('click', ".remove-question", function() {
-     $(this).parent().remove();
-     });
-     $("#poll-create").on('click keypress', ".add-question", function() {
-     $(this).parent().before('<li> <input type="text"required="required"> <button class="remove-question">-</button> <div> <label> Number of min answers: <input value="1" type="number" min="1" max="2"> </label> <label> Number of max answers: <input value="1" type="number" min="1" max="2"> </label> </div> <ol class="answers"> <li> <input type="text" required="required"> <button class="remove-answer">-</button> </li> <li> <input type="text" required="required"> <button class="remove-answer">-</button> </li> <li> <input type="text" class="add-answer" value="Clique para adicionar opção."> </li> </ol> </li>');
-     });
-     
-     $("#poll-create input[type='submit']").on('click', function() {
-     event.preventDefault();
-     
-     $form = $(this).parent();
-     pollSerialize($form);
-     
-     });
-     **/
 
 
     $("#poll-create").append(new Poll(ERROR_MESSAGE, OLD_POLL_DATA).html());
