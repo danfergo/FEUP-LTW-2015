@@ -23,8 +23,16 @@ fieldset{
 }
 
 
+a,a:hover{
+    color:#000;
+}
+
+
+
 #page-sidebar{
     background:#eee;
+    border:1px solid #ccc;
+    border-top:none;
     overflow:auto;
     padding:10px;
     -webkit-transition: all 0.2s ease-in-out;
@@ -38,6 +46,40 @@ fieldset{
     max-width: 300px;
 }
 
+#page-menu ul{
+    margin:0;
+    padding:0;
+}
+
+#page-menu li{
+    width:100%;
+    text-align: right;
+    padding:10px;   
+}
+
+#page-menu a {
+    color:#111;
+    padding:10px;
+    font-weight:bold;
+    text-decoration:none;
+}
+#page-menu a span{
+    font-size: 25px;
+    vertical-align: middle;
+    margin-top: -5px;
+    margin-left: 5px;
+}
+
+
+#page-menu li.active{
+    background:#333;
+}
+
+#page-menu li.active a{
+    color:#fff;
+}
+
+
 #page-header{
     height:50px;
     background:#202020;
@@ -48,6 +90,28 @@ fieldset{
 
 #page-header-area{
     height:50px;
+}
+
+input , button {
+    outline: 0!important;
+    box-shadow: none !important;
+}
+
+input:focus{
+    border-color:#999!important;
+}
+
+
+.btn-primary,.btn-primary:active,.btn-primary:visited, .btn-primary:link{
+    outline:0!important;
+    box-shadow: none!important;
+    background-color:#222222!important;
+    border-color:#111!important;
+}
+
+.btn-primary:hover{
+    background:#292929;
+    border:#333 1px solid;
 }
 
 
@@ -76,29 +140,45 @@ fieldset{
 
 
 .create-poll ol{
-    margin:0 0 0 40px;
+    margin:0;
     padding:0;
 }
 
-.create-poll ol li{
+.create-poll li{
     list-style: none;
-    margin:5px 15px 5px 5px;
+    margin: 5px 0;
+
 }
-.create-poll ol ol li{
-    margin-right:0;
+.create-poll ol.questions > li{
+    border:1px dashed #ccc;
+    border-radius:5px;
+    padding:15px 0;
+    margin:5px 0;
 }
+
 
 .create-poll .answer-adder{
     background:#eee;
 }
 
-#poll-create ol{
-    margin-left:40px;
-}
-#poll-create ol .container-fluid{
-    margin-left:45px;
+.create-poll ol .container-fluid{
+    margin:0;
+    padding:0;
 }
 
+.create-poll ol ol{
+    margin:0 15px;
+}
+
+.create-poll ol .container-fluid > div{
+    margin:5px 0;
+    padding:0;
+}
+
+.create-poll ol .container-fluid:first-child{
+    margin-left:15px;
+    margin-right:15px;
+}
 
 label input, label textarea, label button{
     font-weight: normal;
@@ -125,6 +205,7 @@ label{
     padding: 6px 12px;
 }
 #page-header .btn{
+    border:1px solid #ccc;  
     border-left:none;
 }
 #page-header .form-control{
@@ -138,7 +219,6 @@ label{
     background:transparent;
     border:none;
     padding:0;
-    outline: 0;
     vertical-align: top;
     overflow:hidden;
     height:25px;

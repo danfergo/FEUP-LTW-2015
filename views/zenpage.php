@@ -2,6 +2,7 @@
 
 require_once('classes/page.php');
 
+
 class Footer extends View {
 
     public function initialize() {
@@ -11,8 +12,15 @@ class Footer extends View {
 }
 
 class Sidebar extends PrivateView {
-
+    
+     private $page_what;
+    
+    private function initPageWhat(){
+        $this->page_what = basename($this->getPage()->getPath());
+    }
+     
     public function initializeForMember() {
+        $this->initPageWhat();
         $this->setTemplate('page-sidebar-logged');
     }
 
@@ -21,6 +29,10 @@ class Sidebar extends PrivateView {
         $this->getPage()->addJavaScriptSrc('js/user-register.js');
     }
 
+    public function isPage($str){
+       return $this->page_what === $str;
+    }
+    
 }
 
 class Header extends View {
@@ -53,7 +65,7 @@ class ZenPage extends Page {
         $this->body = new PageWrapper();
     }
 
-    public function initialize() {
+    public function initialize() {        
         $this->addMetaTag(array('name'=> 'viewport', 'content' => 'width=device-width, initial-scale=1'));
         $this->addMetaTag(array('http-equiv' => 'X-UA-Compatible', 'content' => 'IE=edge'));
 

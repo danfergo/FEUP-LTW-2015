@@ -1,29 +1,32 @@
 <?php
-$userName = $this->getPage()->getUser()->getName();
+$userFirstName = explode(' ', $this->getPage()->getUser()->getName())[0];
 ?> 
 
 
 <section>
-    <p><b>Olá, <?= $userName; ?> </b> </p>
+    <p><b>Olá, <?= $userFirstName; ?> </b> </p>
 
 
-    <a href="logout.php">   
-        <button type="button" class="btn btn-default">LOGOUT</button>
-    </a>
 
-</section>
+</section>  
 
 
-<nav>
+<nav id="page-menu">
     <ul>
-        <li>
-            <a href="createpoll.php"> Criar Votação </a>
+        <li class="<?= $this->isPage('index.php') ? 'active' : ''; ?>">
+            <a href="index.php"> Destaques <span class="glyphicon glyphicon-home"> </span></a>
+        </li>
+        <li class="<?= $this->isPage('createpoll.php') ? 'active' : ''; ?>">
+            <a href="createpoll.php"> Criar Votação <span class="glyphicon glyphicon-plus"> </span></a>
+        </li>
+        <li class="<?= $this->isPage('mypolls.php') ? 'active' : ''; ?>">
+            <a href="mypolls.php"> Minhas votações <span class="glyphicon glyphicon-briefcase"> </span></a>
+        </li>
+        <li class="<?= $this->isPage('history.php') ? 'active' : ''; ?>">
+            <a href="history.php"> Histórico <span class="glyphicon glyphicon-time"> </span></a>
         </li>
         <li>
-            <a href="mypolls.php"> Minhas votações </a>
-        </li>
-        <li>
-            <a href="history.php"> Histórico </a>
+            <a href="logout.php"> Sair <span class="glyphicon glyphicon-off"> </span></a>
         </li>
     </ul>
 </nav>

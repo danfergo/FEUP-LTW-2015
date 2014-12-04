@@ -33,5 +33,10 @@
         $("#shaddowing").toggleClass("active");
 
         $(this).toggleClass("active");
+
+
+        $('#shaddowing').click(function () {
+            $("#nav-toggler").trigger("click");
+        });
     });
 </script>
