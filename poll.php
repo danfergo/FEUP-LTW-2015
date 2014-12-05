@@ -21,7 +21,7 @@ $page = new ZenPage(__FILE__, user_who());
 class PollView extends View {
     
     private $poll;
-    
+     
     public function __construct($poll){
         $this->poll = $poll;
     }
@@ -35,7 +35,14 @@ class PollView extends View {
     function getPoll() {
         return $this->poll;
     }
+    
+    function isEditable(){
+        return $this->getPage()->getUser()->getUserid() === $this->poll->getOwnerId() && $this->poll->getState() == 0;
+    }
 
+    function isClosable(){
+        return $this->getPage()->getUser()->getUserid() === $this->poll->getOwnerId() && $this->poll->getState() == 1;
+    }
 }
 $page->setMainView(new PollView($poll));
 $page->echoView();
