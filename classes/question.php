@@ -2,7 +2,7 @@
 
 class Question {
 
-    private $questionId;
+    private $questionId = 0;
     private $pollId;
     private $title;
     private $description;
@@ -91,6 +91,14 @@ class Question {
             $results['answers'][] = $answer->results();
         }
         return $results;
+    }
+
+    public function dataAndAnswers() {
+        $ret = $this->data();
+        foreach ($this->answers as $answer) {
+            $ret['answers'][] = $answer->data();
+        }
+        return $ret;
     }
 
     public function getAnswer($answerid) {

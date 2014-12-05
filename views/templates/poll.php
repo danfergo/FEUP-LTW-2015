@@ -30,11 +30,9 @@ $poll_id = $this->getPoll()->getPollId();
                 <button class="btn btn-primary btn-vote" poll-id="<?= $poll_id; ?>"> Votar</button>
                 <?php if ($this->isEditable()) { ?>
                     <a href="managepoll.php?id=<?= $this->getPoll()->getPollId() ?>">
-                        <button class="btn btn-vote"> Editar</button>
-                    </a>
-                    <a href="managepoll.php?id=<?= $this->getPoll()->getPollId() ?>">
-                        <button class="btn btn-vote"> Editar</button>
-                    </a>
+                        <input type="submit" class="btn" value="Editar" ></a>
+                    <a href="requests/poll/publish.php?id=<?= $this->getPoll()->getPollId() ?>">
+                        <input type="submit" class="btn" value="Publicar"></a>
                 <?php } ?>
             </div>
         </div>

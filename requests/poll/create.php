@@ -9,8 +9,12 @@ require_once('../../actions/sessioning.php');
 $pollData = array(
     'title' => $_POST['title'],
     'description' => $_POST['description'],
-    'privacy' => $_POST['privacy'],
+    'privacy' => $_POST['privacy'] == 1 ? 1 : 0,
     'questions' => array());
+
+if (isset($_POST['poll_id'])) {
+    $pollData['poll_id'] = $_POST['poll_id'];
+}
 
 $i = 0;
 while (isset($_POST["question_title_$i"])) {
@@ -20,13 +24,21 @@ while (isset($_POST["question_title_$i"])) {
         'min' => $_POST["question_min_$i"],
         'max' => $_POST["question_max_$i"],
         'answers' => array());
+    if (isset($_POST["question_id_$i"])) {
+        $question['question_id'] = $_POST["question_id_$i"];
+    }
 
     $j = 0;
     while (isset($_POST["answer_{$i}_$j"])) {
-        $question['answers'][] = array('title' => $_POST["answer_{$i}_$j"]);
+        if (isset($_POST["answer_id_{$i}_$j"])) {
+            $question['answers'][] = array('title' => $_POST["answer_{$i}_$j"], 'answer_id' => $_POST["answer_id_{$i}_$j"]);
+            echo $_POST["answer_id_{$i}_$j"] ."\n";
+        } else {
+            $question['answers'][] = array('title' => $_POST["answer_{$i}_$j"]);
+        }
         $j++;
     }
-    
+
     $pollData['questions'][] = $question;
     $i++;
 }
@@ -44,7 +56,7 @@ try {
     session_setTempData('POLL_CREATE_ERROR', $e);
     session_setTempData('POLL_DATA', $pollData);
 
-    header("Location: ../../createpoll.php");
+    header("Location: ../../managepoll.php");
 }
 
 

@@ -2,7 +2,7 @@
 
 class Poll {
 
-    private $pollId;
+    private $pollId = 0;
     private $ownerId;
     private $description;
     private $privacy;
@@ -10,12 +10,13 @@ class Poll {
     private $updatedTime;
     private $questions = array();
     private $title;
+    private $state = 0;
 
     function __construct() {
         
     }
 
-    static function PollInit($pollId, $ownerId, $title, $description, $privacy, $createdTime, $updatedTime) {
+    static function PollInit($pollId, $ownerId, $title, $description, $privacy, $createdTime, $updatedTime, $state) {
         $poll = new Poll();
         $poll->pollId = $pollId;
         $poll->ownerId = $ownerId;
@@ -24,6 +25,7 @@ class Poll {
         $poll->privacy = $privacy;
         $poll->createdTime = $createdTime;
         $poll->updatedTime = $updatedTime;
+        $poll->state = $state;
         return $poll;
     }
 
@@ -33,6 +35,10 @@ class Poll {
 
     public function addQuestion($question) {
         $this->questions[] = $question;
+    }
+
+    public function getState() {
+        return $this->state;
     }
 
     public function removeQuestion($q) {
@@ -114,6 +120,14 @@ class Poll {
 
     public function data() {
         return array('poll_id' => $this->pollId, 'title' => $this->title, 'description' => $this->description);
+    }
+
+    public function dataAndQuestionsAnsAnswers() {
+        $data = $this->data();
+        foreach ($this->questions as $question) {
+            $data['questions'][] = $question->dataAndAnswers();
+        }
+        return $data;
     }
 
 }

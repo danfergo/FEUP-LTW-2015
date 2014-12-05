@@ -9,7 +9,7 @@ function db_poll_insert($poll) {
     global $dbh;
     $t = date('Y-m-d H:i:s');
 
-    $stmt = $dbh->prepare("INSERT INTO poll (owner_id,title,description,privacy,created_time,updated_time)  VALUES (?,?,?,?,?,?)");
+    $stmt = $dbh->prepare("INSERT INTO poll (owner_id,title,description,privacy,created_time,updated_time,poll_state)  VALUES (?,?,?,?,?,?,0)");
     $stmt->execute(array(
         $poll->getOwnerId(),
         $poll->getTitle(),
@@ -41,37 +41,73 @@ function db_answer_insert($answer) {
     $answer->setAnswerId($dbh->lastInsertId());
 }
 
+function db_poll_update($poll, $state = 0) {
+    global $dbh;
+    $t = date('Y-m-d H:i:s');
+
+    $stmt = $dbh->prepare("UPDATE poll SET owner_id = ?, title = ? , description = ? , privacy = ? , updated_time = ?  , poll_state = ? WHERE poll_id = ?");
+    $stmt->execute(array(
+        $poll->getOwnerId(),
+        $poll->getTitle(),
+        $poll->getDescription(),
+        $poll->getPrivacy(), $t,
+        $state,
+        $poll->getPollId()));
+}
+
+function db_question_update($question) {
+    global $dbh;
+
+    $stmt = $dbh->prepare("UPDATE question SET poll_id = ?, title = ?, description = ?, min_possible_choices = ?, max_possible_choices = ?  WHERE question_id = ?");
+    $stmt->execute(array(
+        $question->getPollId(),
+        $question->getTitle(),
+        $question->getDescription(),
+        $question->getNumMinPossibleChoices(),
+        $question->getNumMaxPossibleChoices(),
+        $question->getQuestionId()));
+}
+
+function db_answer_update($answer) {
+    global $dbh;
+
+    $stmt = $dbh->prepare("UPDATE answer SET question_id = ?, title = ? WHERE answer_id = ? ");
+    $stmt->execute(array(
+        $answer->getQuestionId(),
+        $answer->getTitle(),
+        $answer->getAnswerId()));
+}
+
 function db_search_polls($poll_search, $user_id, $orderMember, $order, $num_results_begin, $num_results_end) {
     global $dbh;
 
     $poll_search = "%$poll_search%";
 
-    if($order == "DESC") {
+    if ($order == "DESC") {
         $stmt = $dbh->prepare("SELECT * FROM poll
                             WHERE (description LIKE :search OR title LIKE :search )
                                   AND (poll.privacy = 0 OR poll.owner_id = :owner_id)
-                            ORDER BY ". $orderMember ." DESC");
-    }
-    elseif($order == "ASC") {
+                            ORDER BY " . $orderMember . " DESC");
+    } elseif ($order == "ASC") {
         $stmt = $dbh->prepare("SELECT * FROM poll
                             WHERE (description LIKE :search OR title LIKE :search )
                                   AND (poll.privacy = 0 OR poll.owner_id = :owner_id)
-                            ORDER BY ". $orderMember ." ASC");
+                            ORDER BY " . $orderMember . " ASC");
     }
-    $stmt->bindParam(':search', $poll_search);
+    $stmt->bindParam(':search', $poll_search);  
     $stmt->bindParam(':owner_id', $user_id);
     $stmt->execute();
 
     $polls = array();
     while ($row = $stmt->fetch()) {
-        $poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time']);
+        $poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time'],$row['poll_state']);
         array_push($polls, $poll);
     }
 
-    return array_slice($polls,$num_results_begin,$num_results_end);
+    return array_slice($polls, $num_results_begin, $num_results_end);
 }
 
-function db_most_popular_polls($poll_search, $user_id, $type){
+function db_most_popular_polls($poll_search, $user_id, $type) {
     global $dbh;
 
     $poll_search = "%$poll_search%";
@@ -89,13 +125,13 @@ function db_most_popular_polls($poll_search, $user_id, $type){
 
     $polls = array();
     while ($row = $stmt->fetch()) {
-        $poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time']);
+        $poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time'],$row['poll_state']);
         array_push($polls, $poll);
     }
     return $polls;
 }
 
-function db_get_polls_answered_by_user($user_id, $orderMember){
+function db_get_polls_answered_by_user($user_id, $orderMember) {
     global $dbh;
 
 
@@ -119,7 +155,7 @@ function db_poll_select_byid($id) {
     $stmt = $dbh->prepare("SELECT * FROM poll WHERE poll_id = ?");
     $stmt->execute(array($id));
     $p = $stmt->fetch();
-    return $p === false ? null : Poll::PollInit($p['poll_id'], $p['owner_id'], $p['title'], $p['description'], $p['privacy'], $p['created_time'], $p['updated_time']);
+    return $p === false ? null : Poll::PollInit($p['poll_id'], $p['owner_id'], $p['title'], $p['description'], $p['privacy'], $p['created_time'], $p['updated_time'],$p['poll_state']);
 }
 
 function db_question_select_byid($id) {

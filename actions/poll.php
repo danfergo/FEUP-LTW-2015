@@ -12,6 +12,10 @@ function arr_at($arr, $pos) {
     return $arr[$pos];
 }
 
+function arr_at_id($arr, $pos) {
+    return !isset($arr[$pos]) ? 0 : 0+$arr[$pos];
+}
+
 /**
  * 
  * question is a array with [descriptio,
@@ -28,6 +32,8 @@ function poll_create($poll) {
     $p->setPrivacy(arr_at($poll, 'privacy'));
     $p->setOwnerId(user_who()->getUserId());
 
+    $p->setPollId(arr_at_id($poll,'poll_id'));
+
     if (count(arr_at($poll, 'questions')) < 1) {
         throw new Exception('MUST_EXIST_A_QUESTION');
     }
@@ -35,10 +41,10 @@ function poll_create($poll) {
     foreach (arr_at($poll, 'questions') as $question) {
         $q = new Question();
         $q->setDescription(arr_at($question, 'description'));
-        $q->setTitle(arr_at($question, 'title'));        
+        $q->setTitle(arr_at($question, 'title'));
         $q->setNumMaxPossibleChoices(arr_at($question, 'max'));
         $q->setNumMinPossibleChoices(arr_at($question, 'min'));
-        
+        $q->setQuestionId(arr_at_id($question,'question_id'));
         
         if (count(arr_at($question, 'answers')) < 2) {
             throw Exception('MUST_EXIST_TWO_ANSWERS');
@@ -47,20 +53,34 @@ function poll_create($poll) {
         foreach (arr_at($question, 'answers') as $answer) {
             $a = new Answer();
             $a->setTitle(arr_at($answer, 'title'));
+            $a->setAnswerId(arr_at_id($answer,'answer_id'));
             $q->addAnswer($a);
         }
 
         $p->addQuestion($q);
     }
+    
 
-// we have now all the poll structure created and validated. lets insert it into db.
-    db_poll_insert($p);
+    // we have now all the poll structure created and validated. lets insert/update it into db.
+    if ($p->getPollId() === 0) {
+        db_poll_insert($p);
+    } else {
+        db_poll_update($p);
+    }
     foreach ($p->getQuestions() as $q) {
         $q->setPollId($p->getPollId());
-        db_question_insert($q);
+        if ($q->getQuestionId() === 0) {
+            db_question_insert($q);
+        } else {
+            db_question_update($q);
+        }
         foreach ($q->getAnswers() as $a) {
             $a->setQuestionId($q->getQuestionId());
-            db_answer_insert($a);
+            if ($a->getAnswerId() === 0) {
+                db_answer_insert($a);
+            } else {
+                db_answer_update($a);
+            }
         }
     }
 
@@ -76,66 +96,58 @@ function poll_delete($pollId) {
 function poll_search($poll_search, $order, $num_results_begin, $num_results_end) {
     $user_id = user_who() === null ? 0 : user_who()->getUserId();
 
-    if($order == 4) {
+    if ($order == 4) {
         $polls = db_most_popular_polls($poll_search, $user_id, "search");
-        return array_slice($polls,$num_results_begin,$num_results_end);
-    }
-    elseif($order == 0){
+        return array_slice($polls, $num_results_begin, $num_results_end);
+    } elseif ($order == 0) {
         return db_search_polls($poll_search, $user_id, 'title', "DESC", $num_results_begin, $num_results_end);
-    }
-    elseif($order == 1) {
+    } elseif ($order == 1) {
         return db_search_polls($poll_search, $user_id, 'title', "ASC", $num_results_begin, $num_results_end);
-    }
-    elseif($order == 2) {
+    } elseif ($order == 2) {
         return db_search_polls($poll_search, $user_id, 'created_time', "DESC", $num_results_begin, $num_results_end);
-    }
-    elseif($order == 3) {
+    } elseif ($order == 3) {
         return db_search_polls($poll_search, $user_id, 'created_time', "ASC", $num_results_begin, $num_results_end);
     }
 }
 
-function poll_user_history($order,$num_results_begin,$num_results_end){
+function poll_user_history($order, $num_results_begin, $num_results_end) {
     $user_id = user_who() === null ? 0 : user_who()->getUserId();
 
-    if($order == 4) {
+    if ($order == 4) {
         $polls = db_most_popular_polls("", $user_id, "history");
-        return array_slice($polls,$num_results_begin,$num_results_end);
-    }
-    elseif($order == 0){
-        $ids = db_get_polls_answered_by_user($user_id,"title"); //DESC
+        return array_slice($polls, $num_results_begin, $num_results_end);
+    } elseif ($order == 0) {
+        $ids = db_get_polls_answered_by_user($user_id, "title"); //DESC
         $polls = array();
-        foreach($ids as $index=>$id){
+        foreach ($ids as $index => $id) {
             $poll = db_poll_select_byid($id['poll_id']);
             array_push($polls, $poll);
         }
-        return array_slice($polls,$num_results_begin,$num_results_end);
-    }
-    elseif($order == 1) {
-        $ids = db_get_polls_answered_by_user($user_id,"title"); //ASC
+        return array_slice($polls, $num_results_begin, $num_results_end);
+    } elseif ($order == 1) {
+        $ids = db_get_polls_answered_by_user($user_id, "title"); //ASC
         $polls = array();
-        foreach($ids as $index=>$id){
+        foreach ($ids as $index => $id) {
             $poll = db_poll_select_byid($id['poll_id']);
             array_push($polls, $poll);
         }
-        return array_slice(array_reverse($polls),$num_results_begin,$num_results_end);
-    }
-    elseif($order == 2) {
-        $ids = db_get_polls_answered_by_user($user_id,"created_time"); //DESC
+        return array_slice(array_reverse($polls), $num_results_begin, $num_results_end);
+    } elseif ($order == 2) {
+        $ids = db_get_polls_answered_by_user($user_id, "created_time"); //DESC
         $polls = array();
-        foreach($ids as $index=>$id){
+        foreach ($ids as $index => $id) {
             $poll = db_poll_select_byid($id['poll_id']);
             array_push($polls, $poll);
         }
-        return array_slice($polls,$num_results_begin,$num_results_end);
-    }
-    elseif($order == 3) {
-        $ids = db_get_polls_answered_by_user($user_id,"created_time"); //ASC
+        return array_slice($polls, $num_results_begin, $num_results_end);
+    } elseif ($order == 3) {
+        $ids = db_get_polls_answered_by_user($user_id, "created_time"); //ASC
         $polls = array();
-        foreach($ids as $index=>$id){
+        foreach ($ids as $index => $id) {
             $poll = db_poll_select_byid($id['poll_id']);
             array_push($polls, $poll);
         }
-        return array_slice(array_reverse($polls),$num_results_begin,$num_results_end);
+        return array_slice(array_reverse($polls), $num_results_begin, $num_results_end);
     }
     return 0;
 }
