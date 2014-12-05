@@ -30,7 +30,7 @@ function poll_create($poll) {
     $p->setTitle(arr_at($poll, 'title'));
     $p->setDescription(arr_at($poll, 'description'));
     $p->setPrivacy(arr_at($poll, 'privacy'));
-    $p->setOwnerId(user_who()->getUserId());
+    $p->setOwnerId(user_who()->getUserid());
 
     $p->setPollId(arr_at_id($poll,'poll_id'));
 
@@ -94,30 +94,40 @@ function poll_delete($pollId) {
 }
 
 function poll_search($poll_search, $order, $num_results_begin, $num_results_end) {
-    $user_id = user_who() === null ? 0 : user_who()->getUserId();
+    $user_id = user_who() === null ? 0 : user_who()->getUserid();
 
-    if ($order == 4) {
-        $polls = db_most_popular_polls($poll_search, $user_id, "search");
-        return array_slice($polls, $num_results_begin, $num_results_end);
-    } elseif ($order == 0) {
+    if($order == 4) {
+        $polls_ids = db_most_popular_polls("", $user_id, "history");
+        $polls = array();
+        foreach($polls_ids as $index =>$poll_id){
+            $poll = db_poll_select_byid($poll_id['poll.poll_id']);
+            array_push($polls,$poll);
+        }
+        return array_slice($polls,$num_results_begin,$num_results_end);
+    } elseif($order == 0){
         return db_search_polls($poll_search, $user_id, 'title', "DESC", $num_results_begin, $num_results_end);
-    } elseif ($order == 1) {
+    } elseif($order == 1) {
         return db_search_polls($poll_search, $user_id, 'title', "ASC", $num_results_begin, $num_results_end);
-    } elseif ($order == 2) {
+    } elseif($order == 2) {
         return db_search_polls($poll_search, $user_id, 'created_time', "DESC", $num_results_begin, $num_results_end);
-    } elseif ($order == 3) {
+    } elseif($order == 3) {
         return db_search_polls($poll_search, $user_id, 'created_time', "ASC", $num_results_begin, $num_results_end);
     }
 }
 
 function poll_user_history($order, $num_results_begin, $num_results_end) {
-    $user_id = user_who() === null ? 0 : user_who()->getUserId();
+    $user_id = user_who() === null ? 0 : user_who()->getUserid();
 
-    if ($order == 4) {
-        $polls = db_most_popular_polls("", $user_id, "history");
-        return array_slice($polls, $num_results_begin, $num_results_end);
-    } elseif ($order == 0) {
-        $ids = db_get_polls_answered_by_user($user_id, "title"); //DESC
+    if($order == 4) {
+        $polls_ids = db_most_popular_polls("", $user_id, "history");
+        $polls = array();
+        foreach($polls_ids as $index =>$poll_id){
+            $poll = db_poll_select_byid($poll_id['poll.poll_id']);
+            array_push($polls,$poll);
+        }
+        return array_slice($polls,$num_results_begin,$num_results_end);
+    } elseif($order == 0){
+        $ids = db_get_polls_answered_by_user($user_id,"title"); //DESC
         $polls = array();
         foreach ($ids as $index => $id) {
             $poll = db_poll_select_byid($id['poll_id']);

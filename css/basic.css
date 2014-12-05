@@ -183,9 +183,15 @@ label input, label textarea, label button{
 
 .listPoll {
     margin-top: 25px;
-    height: 300px; /* AUMENTAR*/
+
+    height: 420px; /* AUMENTAR*/
     word-wrap: break-word;
+ }
+
+.listPoll img{
+    margin-bottom: 20px;
 }
+
 
 .order-buttons{
     margin-top: 10px;
@@ -279,12 +285,14 @@ label{
         left:0;
     }
     .listPoll {
+
         margin-top: 25px;
-        height: 300px;
+        height: 375px;
     }
 
-    .listPoll img{
-        float: left;
+    .listPoll div a img{
+        /*float: left;*/
+
         margin-right: 30px;
     }
 
