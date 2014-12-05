@@ -66,10 +66,20 @@ class Question {
     }
 
     public function setTitle($title) {
+        if (strlen($title) < 10 || strlen($title) > 150) {
+            throw new Exception('INVALID_QUESTION_TITLE_SIZE');
+        } else if (!preg_match('/^[A-Za-z\s,]*$/', $title)) {
+            throw new Exception('INVALID_QUESTION_TITLE_CHARSET');
+        }
         $this->title = $title;
     }
 
     public function setDescription($description) {
+        if (strlen($description) < 10 || strlen($description) > 150) {
+            throw new Exception('INVALID_QUESTION_DESCRIPTION_SIZE');
+        } else if (!preg_match('/^[A-Za-z\s,.]*$/', $description)) {
+            throw new Exception('INVALID_QUESTION_DESCRIPTION_CHARSET');
+        }
         $this->description = $description;
     }
 

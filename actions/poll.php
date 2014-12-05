@@ -64,6 +64,7 @@ function poll_create($poll) {
     // remove removed data
 
 
+
     if ($p->getPollId() !== 0 && $oldPoll = poll_get($p->getPollId())) {
         foreach ($oldPoll->getQuestions() as $oldq) {
             try {

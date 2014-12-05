@@ -153,7 +153,7 @@ function db_most_popular_polls($poll_search, $user_id, $type) {
 
     $polls = array();
     while ($row = $stmt->fetch()) {
-        //$poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time']);
+     //   $poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time'], $row['poll_state']);
         array_push($polls, $row);
     }
     return $polls;

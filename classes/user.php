@@ -53,8 +53,11 @@ class User {
 
     public function setName($name) {
         $name = trim($name);
-        if (strlen($name) >= 6 && strlen($name) <= 30 && count(explode(' ', $name)) === 2){
-            throw new Exception('INVALID_NAME');
+        $nrpalavras = count(explode(' ', $name));
+        if (strlen($name) >= 6 && strlen($name) <= 30 && $nrpalavras == 1 && $nrpalavras > 6) {
+            throw new Exception('INVALID_NAME_FORMAT');
+        } else if (!preg_match('/^[A-Za-z\s]*$/', $name)) {
+            throw new Exception('INVALID_CHARSET');
         }
         $this->name = $name;
     }

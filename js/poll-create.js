@@ -2,7 +2,8 @@ ERROR_MESSAGE = false;
 OLD_POLL_DATA = null;
 
 WARNING = new Array();
-WARNING.INVALID_POLL_TITLE = "O titulo da poll não está direito, fds.";
+WARNING.INVALID_POLL_TITLE_SIZE = "O titulo da votação da pol deve ter entre 10 a 150 carateres.";
+WARNING.INVALID_POLL_TITLE_CHARSET = "O titulo da poll pode apenas conter letras de A a Z, numeros, ou virgulas.";
 
 
 
@@ -67,7 +68,7 @@ AnswerAdder.prototype = new Answer();
 /**** QUESTION ****/
 
 
-function Question(question,poll) {
+function Question(question, poll) {
     this.poll = poll;
 
     $title = question ? question['title'] : "";
@@ -172,8 +173,8 @@ Question.prototype.setName = function(q) {
 };
 
 
-function RemovableQuestion(question,poll) {
-    Question.call(this, question,poll); // calls supper class constructor
+function RemovableQuestion(question, poll) {
+    Question.call(this, question, poll); // calls supper class constructor
     this.li.children('.container-fluid:eq(0)').children('div:eq(1)').append(this.btnRemove = $('<input type=button class="btn btn-default" value="Remover Pergunta">'));
 
     this.btnRemove.data('question', this).on('click', function() {
@@ -192,8 +193,6 @@ function Poll(errorMsg, oldPollData) {
     this.form.append($fsPollData = $("<fieldset>").append("<legend>Dados da votação"));
 
     $title = "", $description = "";
-    //typeof errorMsg === "string" && errorMsg !== 'EDIT_POLL'
-    // this.form.append($("<div class='alert alert-danger' role=alert><strong>Erro!</strong> " + WARNING[errorMsg] + "</div>"));
 
 
     $container = $('<div class=container-fluid>').appendTo($fsPollData);
@@ -260,7 +259,7 @@ function Poll(errorMsg, oldPollData) {
 }
 
 Poll.prototype.addQuestion = function(question) {
-    question = this.questions.length === 0 ? new Question(question,this) : new RemovableQuestion(question,this);
+    question = this.questions.length === 0 ? new Question(question, this) : new RemovableQuestion(question, this);
     this.questions.push(question);
     this.ol.append(question.html());
     question.inpTitle.focus();
@@ -279,7 +278,7 @@ Poll.prototype.submit = function() {
 };
 
 
-Poll.prototype.rmvQuestion = function(question){
+Poll.prototype.rmvQuestion = function(question) {
     this.questions.splice(question.li.index(), 1);
     question.rmv();
 };
@@ -287,6 +286,14 @@ Poll.prototype.rmvQuestion = function(question){
 
 
 $(document).ready(function() {
+    if (typeof ERROR_MESSAGE === "string" && ERROR_MESSAGE !== 'EDIT_POLL') {
+        if (ERROR_MESSAGE in WARNING) {
+            $("#poll-create").append($("<div class='alert alert-danger' role=alert><strong>Erro!</strong> " + WARNING[ERROR_MESSAGE] + "</div>"));
+        } else {
+            alert(ERROR_MESSAGE);
+            $("#poll-create").append($("<div class='alert alert-danger' role=alert><strong>Erro!</strong> Oops, algo de inesperado aconteceu. </div>"));
+        }
+    }
     $("#poll-create").append(new Poll(ERROR_MESSAGE, OLD_POLL_DATA).html());
 });
 

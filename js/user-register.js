@@ -1,13 +1,12 @@
 function userRegister(form) {
     $.post("requests/user/register.php", form.serialize()).done(function(data) {
-        alert("Data Loaded: " + data);
+        alert(data);
     });
 }
 
 function userLogin(form) {
     $.post("requests/user/login.php", form.serialize()).done(function(data) {
         if (typeof data === 'object' && data.hasOwnProperty('userid')) {
-            alert("LOGGED IN");
             location.reload();
         } else {
             alert(data);
@@ -26,4 +25,4 @@ $(document).ready(function() {
         event.preventDefault();
         userLogin($(this));
     });
-});
+}); 

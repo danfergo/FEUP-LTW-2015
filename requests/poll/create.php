@@ -9,7 +9,7 @@ require_once('../../actions/sessioning.php');
 $pollData = array(
     'title' => $_POST['title'],
     'description' => $_POST['description'],
-    'privacy' => $_POST['privacy'] == 1 ? 1 : 0,
+    'privacy' => isset($_POST['privacy']) &&  $_POST['privacy'] == 1 ? 1 : 0,
     'questions' => array());
 
 if (isset($_POST['poll_id'])) {
