@@ -21,6 +21,7 @@ CREATE TABLE poll (
   title TEXT,
   description TEXT,
   privacy INTEGER,
+  poll_state INTEGER,
   created_time TEXT,
   updated_time TEXT
 );
