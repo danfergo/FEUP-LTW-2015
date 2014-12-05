@@ -8,7 +8,7 @@
             <li>Digo Gomes - up201106586@fc.up.pt</li>
             <li>Nelson Alves - ei12094@fe.up.pt</li>
         </ul>
-        <p>Para qualquer informação adicional não exite em contactar-nos!</p>
+        <p>Para qualquer informação adicional não hesite em contactar-nos!</p>
     </h4>
 </div>
 
