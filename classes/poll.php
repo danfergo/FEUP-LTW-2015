@@ -64,8 +64,10 @@ class Poll {
     }
 
     public function setTitle($title) {
-        if (strlen($title) < 5) {
-            throw new Exception('INVALID_POLL_TITLE');
+        if (strlen($title) < 10 || strlen($title) > 150) {
+            throw new Exception('INVALID_POLL_TITLE_SIZE');
+        } else if (!preg_match('/^[A-Za-z\s,0-9]*$/', $title)) {
+            throw new Exception('INVALID_POLL_TITLE_CHARSET');
         }
         $this->title = $title;
     }
@@ -99,7 +101,13 @@ class Poll {
     }
 
     public function setDescription($description) {
+        if (strlen($description) < 10 || strlen($description) > 300) {
+            throw new Exception('INVALID_POLL_DESCRIPTION_SIZE');
+        } else if (!preg_match('/^[A-Za-z\s,.0-9]*$/', $description)) {
+            throw new Exception('INVALID_POLL_DESCRIPTION_CHARSET');
+        }
         $this->description = $description;
+        
     }
 
     public function setThumbnailURL($thumbnailURL) {
@@ -107,6 +115,9 @@ class Poll {
     }
 
     public function setPrivacy($privacy) {
+            if ($privacy !== 0 && $privacy !== 1) {
+            throw new Exception('INVALID_PRIVACY_VALUE');
+        }
         $this->privacy = $privacy;
     }
 
