@@ -21,7 +21,7 @@ function test_input($data) {
   return $data;
 }
 
-$to = "paracontas987@hotmail.com";
+$to = "danfergo@gmail.com";
 
 $finalmessage =
 "<html>
@@ -46,5 +46,3 @@ mail($to,$subject,$finalmessage,implode("\r\n", $headers));
 
 $json["success"] = true;
 echo json_encode($json);
-//echo "e-mail enviado com sucesso";
-//header("Location:../index.php");

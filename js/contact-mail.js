@@ -4,8 +4,7 @@ function sendEmail(form) {
 
 $(document).ready(function() {
     $("#sendemail").on('submit', function() {
-        //event.preventDefault();
-        //sendEmail($this);
+        
         var that = $(this),
             contents = that.serialize();
         
@@ -16,14 +15,15 @@ $(document).ready(function() {
             data: contents,
             success: function(data) {
                 if(data.success) {
-                    $("#sendemail").after("<p>O e-mail foi enviado com sucesso!</p>");
+                    $('.successful').remove();
+                    $('#sendemail').after('<p class="successful">O e-mail foi enviado com sucesso!</p>');
                 }
             }
         });
         
         return false;
     });
-    //pop up
+
 });
 
 
