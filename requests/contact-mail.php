@@ -1,7 +1,11 @@
 <?php
+header("Content-type: text/javascript");
 
-// define variables and set to empty values
 $username = $email = $subject = $message = "";
+
+$json = array(
+    "success" => false    
+);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $username = test_input($_POST["username"]);
@@ -19,8 +23,8 @@ function test_input($data) {
 
 $to = "paracontas987@hotmail.com";
 
-$finalmessage = "
-<html>
+$finalmessage =
+"<html>
     <head>
         <title>Perguntar Mail</title>
     </head>
@@ -40,4 +44,7 @@ $headers[] = "X-Mailer: PHP/".phpversion();
 
 mail($to,$subject,$finalmessage,implode("\r\n", $headers));
 
-header("Location:../index.php");
+$json["success"] = true;
+echo json_encode($json);
+//echo "e-mail enviado com sucesso";
+//header("Location:../index.php");
