@@ -9,7 +9,7 @@ $page = new ZenPage(__FILE__, user_who());
 class About extends View {
 
     public function initialize() {
-        
+        $this->setTemplate('about');
     }
 
 }
