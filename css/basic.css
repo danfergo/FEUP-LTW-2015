@@ -54,7 +54,8 @@ a,a:hover{
 #page-menu li{
     width:100%;
     text-align: right;
-    padding:10px;   
+    padding:10px; 
+    list-style-type: none;
 }
 
 #page-menu a {
@@ -66,8 +67,10 @@ a,a:hover{
 #page-menu a span{
     font-size: 25px;
     vertical-align: middle;
-    margin-top: -5px;
-    margin-left: 5px;
+    margin-top: -3px;
+    float: right;
+    display: block;
+    width: 23px;
 }
 
 
@@ -301,7 +304,7 @@ label{
     #nav-toggler {
         visibility:visible;
     }
-    
+
     #logo-text{
         display:none;
     }

@@ -13,7 +13,7 @@ function Answer(question, answer) {
     $answer = answer ? answer['title'] : "";
     this.question = question;
     this.li = $("<li>");
-    if(answer){
+    if (answer) {
         this.li.prepend(this.hiddenId = $('<input type=hidden>').val(answer['answer_id']));
     }
     this.li.append(this.input = $("<input type=text class=form-control>").val($answer));
@@ -25,7 +25,8 @@ Answer.prototype.html = function() {
 
 Answer.prototype.setName = function(q, a) {
     this.input.attr('name', 'answer_' + q + '_' + a);
-    if(this.hiddenId)this.hiddenId.attr('name', 'answer_id_' + q + '_' + a);
+    if (this.hiddenId)
+        this.hiddenId.attr('name', 'answer_id_' + q + '_' + a);
 };
 
 Answer.prototype.rmv = function() {
@@ -45,7 +46,7 @@ function RemovableAnswer(question, answer) {
     this.btnRemove.on('click', function(e) {
         e.preventDefault();
         var answer = $(this).data('answer');
-        answer.question.rmv(answer);
+        answer.question.rmvAnswer(answer);
     });
     this.li.append($wrapper);
 
@@ -66,7 +67,8 @@ AnswerAdder.prototype = new Answer();
 /**** QUESTION ****/
 
 
-function Question(question) {
+function Question(question,poll) {
+    this.poll = poll;
 
     $title = question ? question['title'] : "";
     $description = question ? question['description'] : "";
@@ -96,7 +98,6 @@ function Question(question) {
     this.selMin = $('<select class=form-control>').appendTo($col3.find("div"));
     this.selMax = $('<select class=form-control>').appendTo($col4.find("div"));
 
-    $area0.children('div:eq(1)').append(this.btnRemove = $('<input type=button class="btn btn-default" value="Remover Pergunta">'));
 
     this.li.append($area0).append($area1).append($area2);
     this.li.append(this.ol = $("<ol>"));
@@ -135,11 +136,15 @@ Question.prototype.addAnswer = function(answer) {
 };
 
 
-Question.prototype.rmv = function(answer) {
+Question.prototype.rmvAnswer = function(answer) {
     this.answers.splice(answer.li.index(), 1);
     this.selMin.find("option:last").remove();
     this.selMax.find("option:last").remove();
     answer.rmv();
+};
+
+Question.prototype.rmv = function() {
+    this.li.remove();
 };
 
 Question.prototype.data = function() {
@@ -158,7 +163,8 @@ Question.prototype.setName = function(q) {
     for (a in this.answers) {
         this.answers[a].setName(q, a);
     }
-    if(this.hiddenId)this.hiddenId.attr('name', 'question_id_' + q);
+    if (this.hiddenId)
+        this.hiddenId.attr('name', 'question_id_' + q);
     this.selMin.attr('name', 'question_min_' + q);
     this.selMax.attr('name', 'question_max_' + q);
     this.inpTitle.attr('name', 'question_title_' + q);
@@ -166,7 +172,16 @@ Question.prototype.setName = function(q) {
 };
 
 
+function RemovableQuestion(question,poll) {
+    Question.call(this, question,poll); // calls supper class constructor
+    this.li.children('.container-fluid:eq(0)').children('div:eq(1)').append(this.btnRemove = $('<input type=button class="btn btn-default" value="Remover Pergunta">'));
 
+    this.btnRemove.data('question', this).on('click', function() {
+        $(this).data('question').poll.rmvQuestion($(this).data('question'));
+    });
+}
+
+RemovableQuestion.prototype = new Question();
 
 
 /**** POLL ****/
@@ -219,7 +234,6 @@ function Poll(errorMsg, oldPollData) {
     });
 
     this.btnSubmit.data('poll', this).on('click', function(e) {
-        //  e.preventDefault();
         $(this).data('poll').submit();
     });
 
@@ -237,7 +251,8 @@ function Poll(errorMsg, oldPollData) {
 
     this.inpImg.attr('name', 'image');
     this.inpTitle.attr('name', 'title');
-    if(this.hiddenId)this.hiddenId.attr('name', 'poll_id');
+    if (this.hiddenId)
+        this.hiddenId.attr('name', 'poll_id');
     this.inpDescription.attr('name', 'description');
     this.inpPrivacy.attr('name', 'privacy');
 
@@ -245,7 +260,7 @@ function Poll(errorMsg, oldPollData) {
 }
 
 Poll.prototype.addQuestion = function(question) {
-    question = new Question(question);
+    question = this.questions.length === 0 ? new Question(question,this) : new RemovableQuestion(question,this);
     this.questions.push(question);
     this.ol.append(question.html());
     question.inpTitle.focus();
@@ -263,6 +278,11 @@ Poll.prototype.submit = function() {
     }
 };
 
+
+Poll.prototype.rmvQuestion = function(question){
+    this.questions.splice(question.li.index(), 1);
+    question.rmv();
+};
 
 
 

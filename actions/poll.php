@@ -13,7 +13,7 @@ function arr_at($arr, $pos) {
 }
 
 function arr_at_id($arr, $pos) {
-    return !isset($arr[$pos]) ? 0 : 0+$arr[$pos];
+    return !isset($arr[$pos]) ? 0 : $arr[$pos];
 }
 
 /**
@@ -32,7 +32,7 @@ function poll_create($poll) {
     $p->setPrivacy(arr_at($poll, 'privacy'));
     $p->setOwnerId(user_who()->getUserId());
 
-    $p->setPollId(arr_at_id($poll,'poll_id'));
+    $p->setPollId(arr_at_id($poll, 'poll_id'));
 
     if (count(arr_at($poll, 'questions')) < 1) {
         throw new Exception('MUST_EXIST_A_QUESTION');
@@ -44,8 +44,8 @@ function poll_create($poll) {
         $q->setTitle(arr_at($question, 'title'));
         $q->setNumMaxPossibleChoices(arr_at($question, 'max'));
         $q->setNumMinPossibleChoices(arr_at($question, 'min'));
-        $q->setQuestionId(arr_at_id($question,'question_id'));
-        
+        $q->setQuestionId(arr_at_id($question, 'question_id'));
+
         if (count(arr_at($question, 'answers')) < 2) {
             throw Exception('MUST_EXIST_TWO_ANSWERS');
         }
@@ -53,13 +53,33 @@ function poll_create($poll) {
         foreach (arr_at($question, 'answers') as $answer) {
             $a = new Answer();
             $a->setTitle(arr_at($answer, 'title'));
-            $a->setAnswerId(arr_at_id($answer,'answer_id'));
+            $a->setAnswerId(arr_at_id($answer, 'answer_id'));
             $q->addAnswer($a);
         }
 
         $p->addQuestion($q);
     }
-    
+
+    // veriy if associations are ok.
+    // remove removed data
+
+
+    if ($p->getPollId() !== 0 && $oldPoll = poll_get($p->getPollId())) {
+        foreach ($oldPoll->getQuestions() as $oldq) {
+            try {
+                $nq = $p->getQuestion($oldq->getQuestionId());
+                foreach ($oldq->getAnswers() as $olda) {
+                    try {
+                        $nq->getAnswer($olda->getAnswerId());
+                    } catch (Exception $e) {
+                        answer_delete($olda);
+                    }
+                }
+            } catch (Exception $e) {
+                question_delete($oldq);
+            }
+        }
+    }
 
     // we have now all the poll structure created and validated. lets insert/update it into db.
     if ($p->getPollId() === 0) {
@@ -87,10 +107,22 @@ function poll_create($poll) {
     return $p;
 }
 
-function poll_delete($pollId) {
-// verifies if poll exists
-// if current user is it's owner
-// calls db delete poll.
+function poll_delete($poll) {
+    foreach ($poll->getQuestions()as $question) {
+        question_delete($question);
+    }
+    db_poll_delete($poll);
+}
+
+function question_delete($question) {
+    foreach ($question->getAnswers() as $answer) {
+        answer_delete($answer);
+    }
+    db_question_delete($question);
+}
+
+function answer_delete($answer) {
+    db_answer_delete($answer);
 }
 
 function poll_search($poll_search, $order, $num_results_begin, $num_results_end) {
