@@ -126,12 +126,9 @@ input:focus{
 
 #logo img{
     vertical-align:top;
-    width:24px;
-    height:24px;
-    background:#fff;
     border-radius:2px;
-    padding: 4px;
 }
+
 
 .logo-section{
     padding:0;
@@ -303,6 +300,10 @@ label{
 
     #nav-toggler {
         visibility:visible;
+    }
+    
+    #logo-text{
+        display:none;
     }
 }
 

@@ -51,7 +51,7 @@ RemovableAnswer.prototype = new Answer();
 function AnswerAdder(question) {
     Answer.call(this, question); // calls supper class constructor
     this.input.addClass("answer-adder");
-    this.input.val("Clique para adicionar opção.");
+    this.input.val("Clique para adicionar opção de resposta.");
     this.input.data('question', this.question).on('click keydown', function (e) {
         $(this).data('question').addAnswer();
     });
@@ -216,7 +216,7 @@ Poll.prototype.addQuestion = function () {
 Poll.prototype.html = function () {
     return this.form;
 };
-
+ 
 
 
 Poll.prototype.submit = function () {
@@ -229,9 +229,6 @@ Poll.prototype.submit = function () {
 
 
 $(document).ready(function () {
-
-
-
 
     $("#poll-create").append(new Poll(ERROR_MESSAGE, OLD_POLL_DATA).html());
 });

@@ -93,9 +93,9 @@ class Question {
         return $results;
     }
 
-    public function getAnswer($answer) {
+    public function getAnswer($answerid) {
         foreach ($this->answers as $answer) {
-            if ($answer->getAnswerId() === $answer->getAnswerId()) {
+            if ($answer->getAnswerId() === $answerid) {
                 return $answer;
             }
         }

@@ -1,3 +1,7 @@
+<?php
+$poll_id = $this->getPoll()->getPollId();
+?>
+
 <div id="poll-page">
 
     <div id="poll-cover" style="background:url('img/poll/<?= $this->getPoll()->getPollId() ?>.jpg')">
@@ -21,7 +25,19 @@
     <p class="poll-description"><?= $this->getPoll()->getDescription() ?></p>
 
     <div class="container-fluid questions">
-        <button class="btn btn-primary" id="btn-vote" poll-id="<?= $this->getPoll()->getPollId() ?>"> Votar</button>
+        <div class="row">
+            <div class="col col-xs-12 text-right">
+                <button class="btn btn-primary btn-vote" poll-id="<?= $poll_id; ?>"> Votar</button>
+                <?php if ($this->isEditable()) { ?>
+                    <a href="managepoll.php?id=<?= $this->getPoll()->getPollId() ?>">
+                        <button class="btn btn-vote"> Editar</button>
+                    </a>
+                    <a href="managepoll.php?id=<?= $this->getPoll()->getPollId() ?>">
+                        <button class="btn btn-vote"> Editar</button>
+                    </a>
+                <?php } ?>
+            </div>
+        </div>
         <div class="row">
             <?php foreach ($this->getPoll()->getQuestions() as $question) { ?>
 
@@ -41,6 +57,11 @@
                 </div>
             <?php } ?>
         </div>
+        <div class="row">
+            <div class="col col-xs-12 text-right">
+                <button class="btn btn-primary btn-vote" poll-id="<?= $this->getPoll()->getPollId() ?>"> Votar</button>
+            </div>
+        </div>
     </div>
 
 
@@ -56,6 +77,12 @@
 
 </div>
 <style>
+    #poll-results{
+        margin-top:40px;
+        margin-bottom:50px;
+        display:none;
+    }
+
     #poll-cover{
         height:300px;
         position:relative;
@@ -79,7 +106,7 @@
         font-size:18pt;
         line-height:130%;
         margin:0;
-        margin-bottom:2px;
+        margin-bottom:10px;
     }
 
 
@@ -116,6 +143,12 @@
         padding: 5px;
     }
 
+    .graph{
+        overflow:hidden;
+        padding:15px;
+        border:1px dashed #ccc;
+        border-radius:3px;
+    }
 
     .graph .graph-bar ul{
         margin:0; 
@@ -130,7 +163,12 @@
     .graph .graph-bar li .bar{
         background:#ccc;
         display:block;
-        height:100%;
+        height:100%;        
+        -webkit-transition: all 0.2s ease-in-out;
+        -moz-transition: all 0.2s ease-in-out;
+        -o-transition: all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
+        width:0;
         border-radius:3px;
     }
 
@@ -159,13 +197,13 @@
 
 
 
-    $("#btn-vote").click(function () {
-        $pollId = $(this).attr('poll-id');
+    $(".btn-vote").click(function() {
+        $pollId = POLL_ID;
         $vdata = new Array();
 
-        $("ul.question").each(function () {
+        $("ul.question").each(function() {
             $answers = new Array();
-            $(this).find("input").each(function () {
+            $(this).find("input").each(function() {
                 if ($(this).is(':checked')) {
                     $answers.push($(this).attr('answer-id'));
                 }
@@ -175,7 +213,7 @@
             }
         });
 
-        $.post("requests/poll/vote.php?pollid=" + $pollId, {'data': JSON.stringify($vdata)}).done(function (data) {
+        $.post("requests/poll/vote.php?pollid=" + $pollId, {'data': JSON.stringify($vdata)}).done(function(data) {
             alert("Data Loaded: " + data);
         });
     });
@@ -194,14 +232,29 @@
         }
 
         for (i in answers) {
-            percentage = sum === 0 ? 0 : answers[i]['votes'] * 100 / sum + '%';
-            span = $('<div class=bar>').css('width', percentage);
+            percentage = sum === 0 ? 0 : answers[i]['votes'] * 100 / sum;
+            span = $('<div class=bar>').css('width', percentage + '%');
             spanBackground = $('<div class=bar-bg>').append(span);
-            percentSub = $('<div class=percentage-sub>').text(percentage);
+            percentSub = $('<div class=percentage-sub>').text(Math.round(percentage) + '%');
             ul.append($("<li>").append('<div class=answer-title>' + answers[i]['title']).append(spanBackground).append(percentSub));
         }
         return ul;
     }
+
+    function graph_bars_update(ul, answers) {
+        var sum = 0, percentage;
+
+        for (i in answers) {
+            sum += parseFloat(answers[i]['votes']);
+        }
+        for (i in answers) {
+            percentage = sum === 0 ? 0 : answers[i]['votes'] * 100 / sum;
+            ul.find('.bar').eq(i).css('width', percentage + '%');
+            ul.find('.percentage-sub').eq(i).text(Math.round(percentage) + '%');
+
+        }
+    }
+
 
     function graph_doughnut(answers) {
         var doughnutData = new Array();
@@ -216,32 +269,62 @@
         }
         var canvas = $("<canvas width=100% height=100%>");
         var ctx = canvas[0].getContext('2d');
-        new Chart(ctx).Doughnut(doughnutData, {responsive: false});
-
+        canvas.data('chart', new Chart(ctx).Doughnut(doughnutData, {responsive: false}));
         return canvas;
     }
 
-    function graph(title, answers) {
-        var outside = $('<div class="col-md-4 col-xs-12">').addClass('graph');
+
+    function graph_doughnut_update(chart, answers) {
+        var changed = false;
+        for (i in answers) {
+            if (chart.segments[i].value !== parseInt(answers[i]['votes'])) {
+                chart.segments[i].value = parseInt(answers[i]['votes']);
+                changed = true;
+            }
+        }
+        if (changed)
+            chart.update();
+    }
+
+    function graph(data) {
+        var outside = $('<div id="graph-' + data['question_id'] + '" class="graph">');
         var graphs = $('<div class=row>').appendTo("<div class=container-fluid>");
         var graphCol = $('<div class="col-md-6 col-xs-12">');
         var leftCol = graphCol.clone().addClass('doughnut').appendTo(graphs);
         var rightCol = graphCol.clone().addClass('graph-bar').appendTo(graphs);
 
-        var spanTitle = $("<div class=graph-title>").text(title);
+        var spanTitle = $("<div class=graph-title>").text(data['title']);
         outside.append(spanTitle);
         outside.append(graphs);
 
-        rightCol.append(graph_bars(answers));
-        leftCol.append(graph_doughnut(answers));
+        rightCol.append(graph_bars(data['answers']));
+        leftCol.append(graph_doughnut(data['answers']));
         return outside;
     }
 
-    $.get("requests/poll/vote.php?pollid=" + POLL_ID).done(function (data) {
-        for (i in data) {
-            if ('question_id' in data[i] && 'answers' in data[i]) {
-                $("#poll-results").append(graph(data[i]['title'], data[i]['answers']));
+
+    function graph_update(graph, data) {
+        graph_doughnut_update(graph.find('canvas').data('chart'), data['answers']);
+        graph_bars_update(graph.find('.graph-bar ul'), data['answers']);
+    }
+
+    var cell = $('<div class="col-md-4 col-xs-12">'), pollResultsRow = $("#poll-results .row").eq(1);
+
+    setInterval(function() {
+        var graphHTML;
+        $.get("requests/poll/vote.php?pollid=" + POLL_ID).done(function(data) {
+            for (i in data) {
+                if ('question_id' in data[i] && 'answers' in data[i]) {
+                    graphHTML = $("#graph-" + data[i]['question_id']);
+                    if (graphHTML.length > 0) {
+                        graph_update(graphHTML, data[i]);
+                    } else {
+                        pollResultsRow.parent().show();
+                        pollResultsRow.append(cell.clone().append(graph(data[i])));
+                    }
+                }
             }
-        }
-    });
+        });
+    }, 500);
+
 </script>   

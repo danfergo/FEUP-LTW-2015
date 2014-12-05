@@ -58,7 +58,7 @@ class ZenPage extends Page {
 
     private $body;
     private $pageTitle;
-    private $websiteTitle = "QnA";
+    private $websiteTitle = "Perguntar";
     
     public function __construct($path, $user) {
         parent::__construct($path, $user);

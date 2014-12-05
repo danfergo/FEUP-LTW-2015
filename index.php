@@ -17,4 +17,4 @@ class Index extends View {
 $page->setMainView(new Index());
 $page->echoView();
 
-
+ 

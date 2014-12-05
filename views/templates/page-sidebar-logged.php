@@ -5,9 +5,6 @@ $userFirstName = explode(' ', $this->getPage()->getUser()->getName())[0];
 
 <section>
     <p><b>Olá, <?= $userFirstName; ?> </b> </p>
-
-
-
 </section>  
 
 
@@ -16,8 +13,8 @@ $userFirstName = explode(' ', $this->getPage()->getUser()->getName())[0];
         <li class="<?= $this->isPage('index.php') ? 'active' : ''; ?>">
             <a href="index.php"> Destaques <span class="glyphicon glyphicon-home"> </span></a>
         </li>
-        <li class="<?= $this->isPage('createpoll.php') ? 'active' : ''; ?>">
-            <a href="createpoll.php"> Criar Votação <span class="glyphicon glyphicon-plus"> </span></a>
+        <li class="<?= $this->isPage('managepoll.php') ? 'active' : ''; ?>">
+            <a href="managepoll.php"> Criar Votação <span class="glyphicon glyphicon-plus"> </span></a>
         </li>
         <li class="<?= $this->isPage('mypolls.php') ? 'active' : ''; ?>">
             <a href="mypolls.php"> Minhas votações <span class="glyphicon glyphicon-briefcase"> </span></a>
