@@ -54,7 +54,8 @@ a,a:hover{
 #page-menu li{
     width:100%;
     text-align: right;
-    padding:10px;   
+    padding:10px; 
+    list-style-type: none;
 }
 
 #page-menu a {
@@ -66,8 +67,10 @@ a,a:hover{
 #page-menu a span{
     font-size: 25px;
     vertical-align: middle;
-    margin-top: -5px;
-    margin-left: 5px;
+    margin-top: -3px;
+    float: right;
+    display: block;
+    width: 23px;
 }
 
 
@@ -183,9 +186,15 @@ label input, label textarea, label button{
 
 .listPoll {
     margin-top: 25px;
-    height: 300px; /* AUMENTAR*/
+
+    height: 420px; /* AUMENTAR*/
     word-wrap: break-word;
+ }
+
+.listPoll img{
+    margin-bottom: 20px;
 }
+
 
 .order-buttons{
     margin-top: 10px;
@@ -279,12 +288,14 @@ label{
         left:0;
     }
     .listPoll {
+
         margin-top: 25px;
-        height: 300px;
+        height: 375px;
     }
 
-    .listPoll img{
-        float: left;
+    .listPoll div a img{
+        /*float: left;*/
+
         margin-right: 30px;
     }
 
@@ -301,7 +312,7 @@ label{
     #nav-toggler {
         visibility:visible;
     }
-    
+
     #logo-text{
         display:none;
     }

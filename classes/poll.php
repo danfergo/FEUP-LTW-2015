@@ -130,4 +130,13 @@ class Poll {
         return $data;
     }
 
+    public function getQuestion($questionid) {
+        foreach ($this->questions as $question) {
+            if ($question->getQuestionId() === $questionid) {
+                return $question;
+            }
+        }
+        throw new Exception('QUESTION_NOT_FOUND');
+    }
+
 }

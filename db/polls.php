@@ -78,6 +78,27 @@ function db_answer_update($answer) {
         $answer->getAnswerId()));
 }
 
+function db_poll_delete($poll) {
+    global $dbh;
+
+    $stmt = $dbh->prepare("DELETE FROM poll WHERE poll_id=?");
+    $stmt->execute(array($poll->getPollId()));
+}
+
+function db_question_delete($question) {
+    global $dbh;
+
+    $stmt = $dbh->prepare("DELETE FROM question WHERE question_id=?");
+    $stmt->execute(array($question->getQuestionId()));
+}
+
+function db_answer_delete($answer) {
+    global $dbh;
+
+    $stmt = $dbh->prepare("DELETE FROM answer WHERE answer_id=?");
+    $stmt->execute(array($answer->getAnswerId()));
+}
+
 function db_search_polls($poll_search, $user_id, $orderMember, $order, $num_results_begin, $num_results_end) {
     global $dbh;
 
@@ -94,13 +115,13 @@ function db_search_polls($poll_search, $user_id, $orderMember, $order, $num_resu
                                   AND (poll.privacy = 0 OR poll.owner_id = :owner_id)
                             ORDER BY " . $orderMember . " ASC");
     }
-    $stmt->bindParam(':search', $poll_search);  
+    $stmt->bindParam(':search', $poll_search);
     $stmt->bindParam(':owner_id', $user_id);
     $stmt->execute();
 
     $polls = array();
     while ($row = $stmt->fetch()) {
-        $poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time'],$row['poll_state']);
+        $poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time'], $row['poll_state']);
         array_push($polls, $poll);
     }
 
@@ -111,24 +132,45 @@ function db_most_popular_polls($poll_search, $user_id, $type) {
     global $dbh;
 
     $poll_search = "%$poll_search%";
-    $notFromHistory = $type == "history" ? "" : "poll.privacy = 0 OR poll.owner_id = :user_id OR ";
+    $notFromHistory = $type == "history" ? "(poll.privacy = 0 OR poll.owner_id = :user_id) " : "answer_chosen.user_id = :user_id ";
 
-    $stmt = $dbh->prepare("SELECT DISTINCT poll.title,poll.created_time,poll.description,poll.privacy,poll.created_time,poll.updated_time,poll.owner_id ,num_answer.poll_id,num_answer.counter
+    $stmt = $dbh->prepare("SELECT DISTINCT poll.poll_id,count(answer_chosen.user_id) as counter
+                            FROM poll, answer_chosen
+                            WHERE answer_chosen.poll_id = poll.poll_id
+                                  AND (poll.description LIKE :search OR poll.title LIKE :search)
+                                  AND " . $notFromHistory ."
+                            GROUP BY poll.poll_id ORDER BY counter DESC");
+
+    /*$stmt = $dbh->prepare("SELECT DISTINCT poll.title,poll.created_time,poll.description,poll.privacy,poll.created_time,poll.updated_time,poll.owner_id ,num_answer.poll_id,num_answer.counter
                             FROM num_answer, poll, choose_answer
                             WHERE num_answer.poll_id = poll.poll_id AND num_answer.answer_id = choose_answer.answer_id
                                   AND (poll.description LIKE :search OR poll.title LIKE :search)
                                   AND (" . $notFromHistory . "choose_answer.user_id = :user_id)
-                            ORDER BY counter DESC");                //,num_answer.question_id,num_answer.answer_id,
+                            GROUP BY num_answer.poll_id ORDER BY counter DESC");                //,num_answer.question_id,num_answer.answer_id,*/
     $stmt->bindParam(':search', $poll_search);
     $stmt->bindParam(':user_id', $user_id);
     $stmt->execute();
 
     $polls = array();
     while ($row = $stmt->fetch()) {
-        $poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time'],$row['poll_state']);
-        array_push($polls, $poll);
+        //$poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time']);
+        array_push($polls, $row);
     }
     return $polls;
+}
+
+function db_get_poll_votes_by_id($id){
+    global $dbh;
+
+    $stmt = $dbh->prepare("SELECT DISTINCT poll.poll_id,count(answer_chosen.user_id) as counter
+                            FROM poll, answer_chosen
+                            WHERE answer_chosen.poll_id = poll.poll_id AND answer_chosen.poll_id = :poll_id
+                            GROUP BY poll.poll_id ORDER BY counter DESC");
+    $stmt->bindParam(':poll_id', $id);
+    $stmt->execute();
+    $row = $stmt->fetch();
+    $counter = $row['counter'];
+    return $counter == null ? 0 : $counter;
 }
 
 function db_get_polls_answered_by_user($user_id, $orderMember) {
@@ -156,6 +198,20 @@ function db_poll_select_byid($id) {
     $stmt->execute(array($id));
     $p = $stmt->fetch();
     return $p === false ? null : Poll::PollInit($p['poll_id'], $p['owner_id'], $p['title'], $p['description'], $p['privacy'], $p['created_time'], $p['updated_time'],$p['poll_state']);
+}
+
+function db_poll_select_by_owner_id($id) {
+    global $dbh;
+
+    $stmt = $dbh->prepare("SELECT * FROM poll WHERE owner_id = ?");
+    $stmt->execute(array($id));
+
+    $polls = array();
+    while($row = $stmt->fetch()) {
+        $poll = Poll::PollInit($row['poll_id'], $row['owner_id'], $row['title'], $row['description'], $row['privacy'], $row['created_time'], $row['updated_time'],$row['poll_state']);
+        array_push($polls, $poll);
+    }
+    return $polls;
 }
 
 function db_question_select_byid($id) {
@@ -204,6 +260,18 @@ function db_select_voted_question_answersid($question, $owner) {
     $result = array();
     while ($a = $stmt->fetch()) {
         $result[] = $a['answer_id'];
+    }
+    return $result;
+}
+
+function db_select_polls_id_voted_by_user_id($user_id) {
+    global $dbh;
+
+    $stmt = $dbh->prepare("SELECT DISTINCT poll_id FROM answer_chosen WHERE user_id = ?");
+    $stmt->execute(array($user_id));
+    $result = array();
+    while ($a = $stmt->fetch()) {
+        $result[] = $a['poll_id'];
     }
     return $result;
 }
