@@ -1,6 +1,6 @@
 <?php
 
-require_once ('views/ZenPage.php');
+require_once ('views/zenpage.php');
 require_once ('views/ListPolls.php');
 require_once ('actions/poll.php');
 require_once ('actions/user.php');
