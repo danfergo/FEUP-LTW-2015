@@ -3,8 +3,8 @@ $poll_id = $this->getPoll()->getPollId();
 ?>
 
 <script type="text/javascript">
-    function popItUp(preurl,w, h){
-        window.open( preurl+this.window.location.href,"", "width=" + w + ", height=" + h + ",resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no");
+    function popItUp(preurl, w, h) {
+        window.open(preurl + this.window.location.href, "", "width=" + w + ", height=" + h + ",resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no");
     }
 </script>
 
@@ -21,7 +21,7 @@ $poll_id = $this->getPoll()->getPollId();
                     <a href="javascript:popItUp('https://www.reddit.com/login?dest=',500,300);"><img src="img/reddit.png" alt="Partilha no Reddit" width="32" height="32"/> </a> 
                 </div>
                 <div class="col col-md-9 col-xs-12">
-                    <h1><strong><?= $this->getPoll()->getTitle() ?></strong></h1>
+                    <h1><strong><?= $this->getPoll()->getTitle() ?>?</strong></h1>
                 </div>
                 <div class="col col-md-1 col-xs-0">
                 </div>
@@ -46,8 +46,9 @@ $poll_id = $this->getPoll()->getPollId();
             <?php foreach ($this->getPoll()->getQuestions() as $question) { ?>
 
                 <div class="col-md-4">
-                    <h2><?= $question->getTitle() ?></h2>
-                    <p><?= $question->getDescription() ?></p>
+                    <h2><?= $question->getTitle() ?>?</h2>
+                    <p><?= $question->getDescription() ?><p>
+                    <p>Escolhe  entre <?= $question->getNumMinPossibleChoices() ?> e <?= $question->getNumMaxPossibleChoices() ?> oções.</p>
                     <ul question-id="<?= $question->getQuestionId() ?>" class="question">
                         <?php foreach ($question->getAnswers() as $answer) { ?> 
                             <li>
@@ -63,7 +64,6 @@ $poll_id = $this->getPoll()->getPollId();
         </div>
         <div class="row">
             <div class="col col-xs-12 text-right">
-                <button class="btn btn-primary btn-vote" poll-id="<?= $this->getPoll()->getPollId() ?>"> Votar</button>
             </div>
         </div>
     </div>
@@ -185,6 +185,12 @@ $poll_id = $this->getPoll()->getPollId();
         border-radius:3px;
     }
 
+    .graph .graph-title{
+        font-weight: bold;
+        font-size: 17px;
+        margin-bottom: 10px;
+    }
+
     .graph .graph-bar .percentage-sub{
         float:left;
         width:20%;
@@ -218,7 +224,11 @@ $poll_id = $this->getPoll()->getPollId();
         });
 
         $.post("requests/poll/vote.php?pollid=" + $pollId, {'data': JSON.stringify($vdata)}).done(function(data) {
-            alert("Data Loaded: " + data);
+            if (typeof data === "string") {
+                alert(data);
+            } else {
+                window.location.href = window.location.href;
+            }
         });
     });
 

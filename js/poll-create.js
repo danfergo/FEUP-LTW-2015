@@ -4,7 +4,7 @@ OLD_POLL_DATA = null;
 WARNING = new Array();
 WARNING.INVALID_POLL_TITLE_SIZE = "O titulo da votação da pol deve ter entre 10 a 150 carateres.";
 WARNING.INVALID_POLL_TITLE_CHARSET = "O titulo da poll pode apenas conter letras de A a Z, numeros, ou virgulas.";
-
+    
 
 
 
