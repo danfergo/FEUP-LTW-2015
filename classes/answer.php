@@ -42,7 +42,7 @@ class Answer {
     public function setTitle($title) {
         if (strlen($title) < 10 || strlen($title) > 100) {
             throw new Exception('INVALID_ANSWER_SIZE');
-        } else if (!preg_match('/^[A-Za-z\s,.0-9]*$/', $title)) {
+        } else if (!preg_match('/^[A-Za-z0-9\s,.]*$/', $title)) {
             throw new Exception('INVALID_ANSWER_CHARSET');
         }
         $this->title = $title;

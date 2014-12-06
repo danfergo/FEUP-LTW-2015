@@ -1,7 +1,7 @@
 <div id="page-header" >
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2 col-xs-2 col-sm-1 logo-section">
+            <div class="col-md-3 col-xs-2 col-sm-1 logo-section">
                 <button id="nav-toggler">
                     <img src="img/btn_menu2.png">
                 </button>
@@ -10,7 +10,7 @@
                     <img src="img/logo.png" id="logo-text" alt="Logo of the website" height="38" width="190">
                 </a>
             </div>
-            <div class="col-md-2 col-xs-0"></div>
+            <div class="col-md-1 col-xs-0"></div>
             <div class="col-md-4 col-xs-10 col-xs-11">
                 <form action="search.php" method="get" id="search-bar">
                     <div class="input-group">

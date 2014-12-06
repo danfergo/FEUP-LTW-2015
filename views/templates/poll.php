@@ -2,19 +2,25 @@
 $poll_id = $this->getPoll()->getPollId();
 ?>
 
+<script type="text/javascript">
+    function popItUp(preurl,w, h){
+        window.open( preurl+this.window.location.href,"", "width=" + w + ", height=" + h + ",resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no");
+    }
+</script>
+
+
 <div id="poll-page">
 
     <div id="poll-cover" style="background:url('img/poll/<?= $this->getPoll()->getPollId() ?>.jpg')">
         <div class="container-fluid title">
             <div class="row">
-                <div class="col col-md-1 col-xs-12 social">
-                    <ul>
-                        <li>
-                        </li>
-                    </ul>
-
+                <div class="col col-md-2 col-xs-12 text-right">
+                    <a href="javascript:popItUp('https://www.facebook.com/sharer/sharer.php?u=',600,200);"><img src="img/fb.png" alt="Partilha no facebook" width="32" height="32"/> </a> 
+                    <a href="javascript:popItUp('https://plus.google.com/u/0/share?url=',600,600);"><img src="img/gp.png" alt="Partilha no Google Plus" width="32" height="32"/> </a>
+                    <a href="javascript:popItUp('https://twitter.com/intent/tweet?url=',500,300);"><img src="img/tw.png" alt="Partilha no Twitter" width="32" height="32"/> </a> 
+                    <a href="javascript:popItUp('https://www.reddit.com/login?dest=',500,300);"><img src="img/reddit.png" alt="Partilha no Reddit" width="32" height="32"/> </a> 
                 </div>
-                <div class="col col-md-10 col-xs-12">
+                <div class="col col-md-9 col-xs-12">
                     <h1><strong><?= $this->getPoll()->getTitle() ?></strong></h1>
                 </div>
                 <div class="col col-md-1 col-xs-0">
